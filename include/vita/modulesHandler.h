@@ -12,5 +12,6 @@
 #include <chrono>
 class GameObject;
 class Camera;
+class Game;
 bool detectInbound(int x1,int y1,int width1,int heigth1,int x2,int y2,int width2,int heigth2);
 #endif

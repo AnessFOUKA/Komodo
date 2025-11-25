@@ -50,13 +50,13 @@ void AnimatedImage::step(){
     int imageCoordsSize=imageCoords.size();
     if(cameras.size()>0){
         for(auto* i:cameras){
-            i->pushCameraGraphicOrder(imgId,x,y,imageX,imageY,imageWidth,imageHeigth,scaleX,scaleY,gameInstance);
+            i->pushCameraGraphicOrder(imgId,x,y,imageX,imageY,imageWidth,imageHeigth,scaleX,scaleY,static_cast<Game*>(gameInstance));
         }
     }else{
-        gameInstance->addGraphicOrder(imgId,x,y,imageX,imageY,imageWidth,imageHeigth,scaleX,scaleY);
+        static_cast<Game*>(gameInstance)->addGraphicOrder(imgId,x,y,imageX,imageY,imageWidth,imageHeigth,scaleX,scaleY);
     }
     if(imageCoordsIndex<imageCoordsSize){
-        imageCoordsIndex+=animationSpeed*gameInstance->getDt();
+        imageCoordsIndex+=animationSpeed*static_cast<Game*>(gameInstance)->getDt();
     }
     
     if(imageCoordsIndex>=imageCoordsSize){

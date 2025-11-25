@@ -18,7 +18,7 @@ class Script{
             endIndex(endIndex),
             scriptSpeed(scriptSpeed),
             loop(loop),
-            mother(mother)
+            mother(nullptr)
         {}
 
         std::function<void(Script*)> getScriptFunction();

@@ -31,8 +31,9 @@ std::vector<int>* ItemHandler::getRemPipeline(){
 
 void ItemHandler::itemRemover(int itemId){
     GameObject* obj=elements[itemId];
-    if(dynamic_cast<ItemHandler*>(obj)){
-        for(int i=dynamic_cast<ItemHandler*>(obj)->getElements()->size()-1;i>=0;i--){
+    ItemHandler* trueTypeObj=dynamic_cast<ItemHandler*>(obj);
+    if(trueTypeObj){
+        for(int i=trueTypeObj->getElements()->size()-1;i>=0;i--){
             itemRemover(i);
         }
     }

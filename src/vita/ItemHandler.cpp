@@ -34,7 +34,7 @@ void ItemHandler::itemRemover(int itemId){
     ItemHandler* trueTypeObj=dynamic_cast<ItemHandler*>(obj);
     if(trueTypeObj){
         for(int i=trueTypeObj->getElements()->size()-1;i>=0;i--){
-            itemRemover(i);
+            trueTypeObj->itemRemover(i);
         }
     }
     elements.erase(elements.begin()+itemId);

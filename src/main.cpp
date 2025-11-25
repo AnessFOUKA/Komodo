@@ -12,6 +12,10 @@ int main(){
             script->getMother()->setCameras({&c1});
             g1.addItem(new AnimatedImage("app0:/assets/image.png",0,0,{{0,0,400,300},{0,0,200,300},{0,0,200,300}},0,1,2,2,{},{}),static_cast<ItemHandler*>(script->getMother()));
         }
+        if(script->getIndex()>0.0f){
+            g1.removeItem(0,static_cast<ItemHandler*>(&g1));
+            g1.getMemoryManager()->removeImg("app0:/assets/image.png");
+        }
     },0.0f,1.0f,1.0f,false));
     g1.addItem(new ItemHandler({},{"testb"}),&g1);
     g1.gameLoop();

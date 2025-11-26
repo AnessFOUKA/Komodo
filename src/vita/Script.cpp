@@ -47,3 +47,22 @@ float Script::getScriptSpeed(){
 void Script::setScriptSpeed(float scriptSpeed){
     this->scriptSpeed=scriptSpeed;
 }
+
+std::map<int,bool> Script::getConditionMap(){
+    return conditionMap;
+}
+
+void Script::setConditionMap(std::map<int,bool> conditionMap){
+    this->conditionMap=conditionMap;
+}
+
+void Script::createCondition(int conditionIndex){
+    conditionMap[conditionIndex]=true;
+}
+
+bool Script::checkCondition(float conditionIndex){
+    if(conditionMap.find((int)conditionIndex)==conditionMap.end())return false;
+    bool conditionState=conditionMap[(int)conditionIndex];
+    conditionMap[(int)conditionIndex]=false;
+    return conditionState;
+}

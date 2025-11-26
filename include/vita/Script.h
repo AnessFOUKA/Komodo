@@ -10,6 +10,7 @@ class Script{
         float scriptSpeed;
         bool loop;
         GameObject* mother;
+        std::map<int,bool> conditionMap;
     public:
         Script(std::function<void(Script*)> scriptFunction,float beginIndex,float endIndex,float scriptSpeed,bool loop) :
             scriptFunction(scriptFunction),
@@ -18,7 +19,8 @@ class Script{
             endIndex(endIndex),
             scriptSpeed(scriptSpeed),
             loop(loop),
-            mother(nullptr)
+            mother(nullptr),
+            conditionMap({})
         {}
 
         std::function<void(Script*)> getScriptFunction();
@@ -28,6 +30,7 @@ class Script{
         bool getLoop();
         GameObject* getMother();
         float getScriptSpeed();
+        std::map<int,bool> getConditionMap();
 
         void setScriptFunction(std::function<void(Script*)> scriptFunction);
         void setBeginIndex(float beginIndex);
@@ -36,7 +39,10 @@ class Script{
         void setLoop(bool loop);
         void setMother(GameObject* mother);
         void setScriptSpeed(float scriptSpeed);
-
+        void setConditionMap(std::map<int,bool> conditionMap);
+        
+        void createCondition(int conditionIndex);
+        bool checkCondition(float conditionIndex);
         void loadScript();
 };
 #endif

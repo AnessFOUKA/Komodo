@@ -23,7 +23,7 @@ class Game : public ItemHandler{
         MemoryManager* getMemoryManager();
         InputManager* getMainInputManager();
         std::map<std::string,std::vector<std::function<void()>>> getGraphicPipeline();
-        void addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth,float scaleX,float scaleY);
+        void addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth);
         void readGraphicPipeline();
         void gameLoop();
         void addItem(GameObject* newObject,ItemHandler* itemHandler);

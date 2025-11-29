@@ -56,9 +56,9 @@ std::map<std::string,std::vector<std::function<void()>>> Game::getGraphicPipelin
     return graphicPipeline;
 }
 
-void Game::addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth,float scaleX,float scaleY){
-    std::function<void()> graphicOrder=[this,imgId,x,y,imageX,imageY,imageWidth,imageHeigth,scaleX,scaleY](){
-        vita2d_draw_texture_part_scale(mainMemoryManager.getImg(imgId),x,y,imageX,imageY,imageWidth,imageHeigth,scaleX,scaleY);
+void Game::addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth){
+    std::function<void()> graphicOrder=[this,imgId,x,y,imageX,imageY,imageWidth,imageHeigth](){
+        vita2d_draw_texture_part_scale(mainMemoryManager.getImg(imgId),x,y,imageX,imageY,imageWidth,imageHeigth,1,1);
     };
     if(graphicPipeline.find(imgId)!=graphicPipeline.end()){
         graphicPipeline[imgId].push_back(graphicOrder);
@@ -93,13 +93,13 @@ void Script::loadScript(){
     }
 };
 
-void Camera::pushCameraGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth,float scaleX,float scaleY,Game* gameInstance){
+void Camera::pushCameraGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth,Game* gameInstance){
     for(auto renderer : renderers){
         int rendererX=renderer[0];
         int rendererY=renderer[1];
         int rendererWidth=renderer[2];
         int rendererHeigth=renderer[3];
-        if(detectInbound(x,y,imageWidth*scaleX,imageHeigth*scaleY,rendererX,rendererY,rendererWidth,rendererHeigth)){
+        if(detectInbound(x,y,imageWidth,imageHeigth,rendererX,rendererY,rendererWidth,rendererHeigth)){
             int worldXTemp=x-(cameraX-rendererX);
             int worldYTemp=y-(cameraY-rendererY);
             int imageXTemp=imageX;
@@ -121,17 +121,17 @@ void Camera::pushCameraGraphicOrder(std::string imgId,int x,int y,int imageX,int
                 worldYTemp=rendererY;
             }
 
-            if(worldXTemp+imageWidthTemp*scaleX>rendererX+rendererWidth){
-                int overflow=(worldXTemp+imageWidthTemp*scaleX)-(rendererX+rendererWidth);
-                imageWidthTemp-=(overflow/scaleX);
+            if(worldXTemp+imageWidthTemp>rendererX+rendererWidth){
+                int overflow=(worldXTemp+imageWidthTemp)-(rendererX+rendererWidth);
+                imageWidthTemp-=overflow;
             }
 
-            if(worldYTemp+imageHeigthTemp*scaleY>rendererY+rendererHeigth){
-                int overflow=(worldYTemp+imageHeigthTemp*scaleY)-(rendererY+rendererHeigth);
-                imageHeigthTemp-=(overflow/scaleY);
+            if(worldYTemp+imageHeigthTemp>rendererY+rendererHeigth){
+                int overflow=(worldYTemp+imageHeigthTemp)-(rendererY+rendererHeigth);
+                imageHeigthTemp-=overflow;
             }
 
-            gameInstance->addGraphicOrder(imgId,worldXTemp,worldYTemp,imageXTemp,imageYTemp,imageWidthTemp,imageHeigthTemp,scaleX,scaleY);
+            gameInstance->addGraphicOrder(imgId,worldXTemp,worldYTemp,imageXTemp,imageYTemp,imageWidthTemp,imageHeigthTemp);
 
         }
     }

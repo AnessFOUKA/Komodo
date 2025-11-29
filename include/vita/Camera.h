@@ -20,6 +20,6 @@ class Camera{
         void setCameraX(int cameraX);
         void setCameraY(int cameraY);
 
-        void pushCameraGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth,float scaleX,float scaleY,Game* gameInstance);
+        void pushCameraGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth,Game* gameInstance);
 };
 #endif

@@ -42,11 +42,11 @@ void AnimatedImage::step(){
     for(auto& i:scriptsList){
         i.loadScript();
     }
-    std::vector<int> imageCoord=imageCoords[(int)imageCoordsIndex];
-    int imageX=imageCoord[0];
-    int imageY=imageCoord[1];
-    int imageWidth=imageCoord[2];
-    int imageHeigth=imageCoord[3];
+    std::vector<int>& imageCoord=imageCoords[(int)imageCoordsIndex];
+    int& imageX=imageCoord[0];
+    int& imageY=imageCoord[1];
+    int& imageWidth=imageCoord[2];
+    int& imageHeigth=imageCoord[3];
     int imageCoordsSize=imageCoords.size();
     Game* trueGameInstance=static_cast<Game*>(gameInstance);
     if(cameras.size()>0){

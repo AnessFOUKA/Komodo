@@ -52,14 +52,12 @@ InputManager* Game::getMainInputManager(){
     return &mainInputManager;
 }
 
-std::map<std::string,std::vector<std::function<void()>>> Game::getGraphicPipeline(){
+std::unordered_map<std::string,std::vector<GraphicOrder>> Game::getGraphicPipeline(){
     return graphicPipeline;
 }
 
 void Game::addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth){
-    std::function<void()> graphicOrder=[this,imgId,x,y,imageX,imageY,imageWidth,imageHeigth](){
-        vita2d_draw_texture_part_scale(mainMemoryManager.getImg(imgId),x,y,imageX,imageY,imageWidth,imageHeigth,1,1);
-    };
+    GraphicOrder graphicOrder={x,y,imageX,imageY,imageWidth,imageHeigth};
     if(graphicPipeline.find(imgId)!=graphicPipeline.end()){
         graphicPipeline[imgId].push_back(graphicOrder);
     }else{
@@ -69,16 +67,15 @@ void Game::addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,i
 }
 
 void Game::readGraphicPipeline(){
-    while(graphicPipeline.size()!=0){
-        std::vector<std::function<void()>> pipeGraphicOrders=graphicPipeline[imgIds[0]];
-        while(pipeGraphicOrders.size()!=0){
-            pipeGraphicOrders[0]();
-            pipeGraphicOrders.erase(pipeGraphicOrders.begin());
+    for(auto& [imgId, pipeGraphicOrders] : graphicPipeline){
+        for(auto& order : pipeGraphicOrders){
+            vita2d_draw_texture_part_scale(mainMemoryManager.getImg(imgId),order.x,order.y,order.imageX,order.imageY,order.imageWidth,order.imageHeigth,1,1);
         }
-        graphicPipeline.erase(imgIds[0]);
-        imgIds.erase(imgIds.begin());
     }
+    graphicPipeline.clear();
+    imgIds.clear(); // si imgIds n'est utilisé que pour stocker les clés
 }
+
 
 float Game::getDt(){
     return dt;

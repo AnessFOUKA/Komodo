@@ -2,11 +2,21 @@
 #define GAME_H
 #include "ItemHandler.h"
 using high_resolution_clock=std::chrono::high_resolution_clock;
+
+struct GraphicOrder{
+    int x;
+    int y;
+    int imageX;
+    int imageY;
+    int imageWidth;
+    int imageHeigth;
+};
+
 class Game : public ItemHandler{
     protected:
         MemoryManager mainMemoryManager;
         InputManager mainInputManager;
-        std::map<std::string,std::vector<std::function<void()>>> graphicPipeline;
+        std::unordered_map<std::string,std::vector<GraphicOrder>> graphicPipeline;
         std::vector<std::string> imgIds;
         high_resolution_clock::time_point previousTime;
         float dt;
@@ -22,7 +32,7 @@ class Game : public ItemHandler{
         {}
         MemoryManager* getMemoryManager();
         InputManager* getMainInputManager();
-        std::map<std::string,std::vector<std::function<void()>>> getGraphicPipeline();
+        std::unordered_map<std::string,std::vector<GraphicOrder>> getGraphicPipeline();
         void addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth);
         void readGraphicPipeline();
         void gameLoop();

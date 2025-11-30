@@ -6,15 +6,11 @@ MemoryManager* Game::getMemoryManager(){
 
 void Game::gameLoop(){
     vita2d_init();
-    vita2d_pgf* pgf=vita2d_load_default_pgf();
     while(1){
         mainMemoryManager.readPipeline();
         mainInputManager.fetchInputs();
         vita2d_start_drawing();
         vita2d_clear_screen();
-        if(mainInputManager.checkClicked("cross")){
-            vita2d_pgf_draw_text(pgf,50,50,RGBA8(255,255,255,255),1.0f,std::to_string(elements.size()).c_str());
-        }
         step();
         readGraphicPipeline();
         vita2d_end_drawing();
@@ -24,7 +20,6 @@ void Game::gameLoop(){
         dt=std::chrono::duration<float>(currentTime-previousTime).count();
         previousTime=currentTime;
     }
-    vita2d_free_pgf(pgf);
     vita2d_fini();
     sceKernelExitProcess(0);
 }

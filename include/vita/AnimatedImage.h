@@ -4,8 +4,8 @@
 class AnimatedImage : public GameObject{
     protected:
         std::string imgId;
-        int x;
-        int y;
+        float x;
+        float y;
         std::vector<std::vector<int>> imageCoords;
         float imageCoordsIndex;
         float animationSpeed;
@@ -20,16 +20,16 @@ class AnimatedImage : public GameObject{
             GameObject(idsList,scriptsIds)
         {}
         std::string getImgId();
-        int getX();
-        int getY();
+        float getX();
+        float getY();
         std::vector<std::vector<int>> getImageCoords();
         float getImageCoordsIndex();
         float getAnimationSpeed();
 
 
         void setImgId(std::string imgId);
-        void setX(int x);
-        void setY(int y);
+        void setX(float x);
+        void setY(float y);
         void setImageCoords(std::vector<std::vector<int>> imageCoords);
         void setImageCoordsIndex(float imageCoordsIndex);
         void setAnimationSpeed(float animationSpeed);

@@ -3,10 +3,10 @@
 std::string AnimatedImage::getImgId(){
     return imgId;
 }
-int AnimatedImage::getX(){
+float AnimatedImage::getX(){
     return x;
 }
-int AnimatedImage::getY(){
+float AnimatedImage::getY(){
     return y;
 }
 std::vector<std::vector<int>> AnimatedImage::getImageCoords(){
@@ -22,10 +22,10 @@ float AnimatedImage::getAnimationSpeed(){
 void AnimatedImage::setImgId(std::string imgId){
     this->imgId=imgId;
 }
-void AnimatedImage::setX(int x){
+void AnimatedImage::setX(float x){
     this->x=x;
 }
-void AnimatedImage::setY(int y){
+void AnimatedImage::setY(float y){
     this->y=y;
 }
 void AnimatedImage::setImageCoords(std::vector<std::vector<int>> imageCoords){

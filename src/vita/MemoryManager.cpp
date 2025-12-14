@@ -44,3 +44,12 @@ void MemoryManager::removeScript(std::string scriptId){
     scriptsMem.erase(scriptId);
     delete script;
 }
+
+void MemoryManager::clearMems(){
+    for(auto& [imgId,texture] : imgMem){
+        removeImg(imgId);
+    }
+    for(auto& [scriptId,script] : scriptsMem){
+        removeScript(scriptId);
+    }
+}

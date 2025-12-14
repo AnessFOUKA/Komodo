@@ -9,7 +9,7 @@ struct GraphicOrder{
     int imageX;
     int imageY;
     int imageWidth;
-    int imageHeigth;
+    int imageHeight;
 };
 
 class Game : public ItemHandler{
@@ -20,6 +20,7 @@ class Game : public ItemHandler{
         std::vector<std::string> imgIds;
         high_resolution_clock::time_point previousTime;
         float dt;
+        vita2d_pvf* pvf;
     public:
         Game(std::vector<std::string> idsList,std::vector<std::string> scriptsIds,std::map<std::string,uint32_t> keys):
             ItemHandler(idsList,scriptsIds),
@@ -30,10 +31,11 @@ class Game : public ItemHandler{
             previousTime(high_resolution_clock::now()),
             dt(0.0f)
         {}
+        vita2d_pvf* getPvf();
         MemoryManager* getMemoryManager();
         InputManager* getMainInputManager();
         std::unordered_map<std::string,std::vector<GraphicOrder>> getGraphicPipeline();
-        void addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeigth);
+        void addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeight);
         void readGraphicPipeline();
         void gameLoop();
         void addItem(GameObject* newObject,ItemHandler* itemHandler);

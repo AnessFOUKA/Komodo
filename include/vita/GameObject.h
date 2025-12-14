@@ -11,6 +11,7 @@ class GameObject{
         bool isJustCreated;
         GameObject* mother;
         GameObject* gameInstance;
+        int arrayId;
         std::vector<Camera*> cameras;
     public:
         GameObject(std::vector<std::string> idsList,std::vector<std::string> scriptsIds) : 
@@ -20,6 +21,7 @@ class GameObject{
             isJustCreated(false),
             mother(nullptr),
             gameInstance(nullptr),
+            arrayId(0),
             cameras({})
         {}
         virtual ~GameObject()=default;
@@ -39,6 +41,8 @@ class GameObject{
 
         virtual std::vector<Camera*> getCameras();
         virtual void setCameras(std::vector<Camera*> cameras);
+        virtual int getArrayId();
+        virtual void setArrayId(int arrayId);
         //on inclura pas de setters pour scriptsIds et scriptsList et on inclura pas de getter pour scriptsList pour des raisons de sécurité.
 };
 #endif

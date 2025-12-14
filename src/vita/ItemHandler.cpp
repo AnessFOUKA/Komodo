@@ -12,13 +12,22 @@ void ItemHandler::step(){
     for(auto& i:scriptsList){
         i.loadScript();
     }
-    for(GameObject* i : elements){
+    /*for(GameObject* i : elements){
         if(i->getIsJustCreated()){
             i->create();
             i->setIsJustCreated(false);
         }
         i->step();
+    }*/
+   for(int i=0;i<elements.size();i++){
+    GameObject* element=elements[i];
+    element->setArrayId(i);
+    if(element->getIsJustCreated()){
+        element->create();
+        element->setIsJustCreated(false);
     }
+    element->step();
+   }
 }
 
 std::vector<std::function<void()>>* ItemHandler::getAddPipeline(){
@@ -51,4 +60,15 @@ void ItemHandler::readPipelines(){
         itemRemover(remPipeline[i]);
     }
     remPipeline={};
+}
+
+std::vector<GameObject*> ItemHandler::getElementById(std::string id){
+    std::vector<GameObject*> gameObjectsList={};
+    for(auto* i : elements){
+        std::vector<std::string> list=i->getIdsList();
+        if(std::find(list.begin(),list.end(),id)!=list.end()){
+            gameObjectsList.push_back(i);
+        }
+    }
+    return gameObjectsList;
 }

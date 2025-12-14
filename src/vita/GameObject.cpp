@@ -57,3 +57,11 @@ std::vector<Camera*> GameObject::getCameras(){
 void GameObject::setCameras(std::vector<Camera*> cameras){
     this->cameras=cameras;
 }
+
+int GameObject::getArrayId(){
+    return arrayId;
+}
+
+void GameObject::setArrayId(int arrayId){
+    this->arrayId=arrayId;
+}

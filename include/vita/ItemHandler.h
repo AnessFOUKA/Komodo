@@ -19,5 +19,6 @@ class ItemHandler : public GameObject{
         std::vector<int>* getRemPipeline();
         void readPipelines();
         void step();
+        std::vector<GameObject*> getElementById(std::string id);
 };  
 #endif

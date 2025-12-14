@@ -21,6 +21,7 @@ class MemoryManager{
         void addScript(std::string scriptId,Script* newScript);
         void removeScript(std::string scriptId);
         void readPipeline();
+        void clearMems();
         //on ajoute pas de setter pour img mem pipeline pour des raisons de sécurité
 };
 #endif

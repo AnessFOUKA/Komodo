@@ -9,6 +9,8 @@ class AnimatedImage : public GameObject{
         std::vector<std::vector<int>> imageCoords;
         float imageCoordsIndex;
         float animationSpeed;
+        float width;
+        float height;
     public:
         AnimatedImage(std::string imgId,int x,int y,std::vector<std::vector<int>> imageCoords,float imageCoordsIndex,float animationSpeed,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
             imgId(imgId),
@@ -17,6 +19,8 @@ class AnimatedImage : public GameObject{
             imageCoords(imageCoords),
             imageCoordsIndex(imageCoordsIndex),
             animationSpeed(animationSpeed),
+            width(imageCoords[imageCoordsIndex][2]),
+            height(imageCoords[imageCoordsIndex][3]),
             GameObject(idsList,scriptsIds)
         {}
         std::string getImgId();
@@ -25,6 +29,8 @@ class AnimatedImage : public GameObject{
         std::vector<std::vector<int>> getImageCoords();
         float getImageCoordsIndex();
         float getAnimationSpeed();
+        float getWidth();
+        float getHeight();
 
 
         void setImgId(std::string imgId);

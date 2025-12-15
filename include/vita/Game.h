@@ -38,7 +38,7 @@ class Game : public ItemHandler{
         void addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeight);
         void readGraphicPipeline();
         void gameLoop();
-        void addItem(GameObject* newObject,ItemHandler* itemHandler);
+        void addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandler);
         void removeItem(int index,ItemHandler* itemHandler);
         float getDt();
 };

@@ -32,7 +32,7 @@ void Game::gameLoop(){
     sceKernelExitProcess(0);
 }
 
-void Game::addItem(GameObject* newObject,ItemHandler* itemHandler){
+void Game::addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandler){
     newObject->setGameInstance(this);
     newObject->setMother(itemHandler);
     newObject->setArrayId(itemHandler->getElements()->size());
@@ -43,9 +43,7 @@ void Game::addItem(GameObject* newObject,ItemHandler* itemHandler){
     for(std::string i : newObject->getScriptsIds()){
         newObject->addScript(i,&mainMemoryManager);
     }
-    itemHandler->getAddPipeline()->push_back([itemHandler,newObject](){
-        itemHandler->getElements()->push_back(newObject);
-    });
+    itemHandler->getAddPipeline()->push_back(std::move(newObject));
 }
 void Game::removeItem(int index,ItemHandler* itemHandler){
     itemHandler->getRemPipeline()->push_back(index);

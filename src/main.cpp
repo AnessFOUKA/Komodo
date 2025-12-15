@@ -3,7 +3,7 @@
 #include "Map.h"
 #include <fstream>
 #include <random>
-int main(){/*
+int main(){
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution randX(0,800);
@@ -40,14 +40,13 @@ int main(){/*
 
     g1.getMemoryManager()->addScript("MapScript",std::make_unique<Script>([&g1,&randX,&randY,&gen](Script* script){
         if(script->checkCondition(0)){
-            g1.addItem(new AnimatedImage("app0:/assets/spritesheet.png",randX(gen),randY(gen),{{10,47,18,18}},0,0,{"Enemy"},{}),static_cast<ItemHandler*>(script->getMother()));
-            Commander* commander=new Commander("app0:/assets/spritesheet.png",0,0,{{10,5,18,18}},0,0,{},{"Commander","Follower"});
-            g1.addItem(commander,static_cast<Map*>(script->getMother()));
-            
-            Node* Follower=new Node("app0:/assets/spritesheet.png",0,0,{{10,26,18,18}},0,0,{"Follower","Node"},{"Follower"});
-            commander->getLastNode()->setFollower(Follower);
-            commander->setLastNode(Follower);
-            g1.addItem(Follower,static_cast<Map*>(script->getMother()));
+            g1.addItem(std::make_unique<AnimatedImage>("app0:/assets/spritesheet.png",randX(gen),randY(gen),std::vector<std::vector<int>>{{10,47,18,18}},0,0,std::vector<std::string>{"Enemy"},std::vector<std::string>{}),static_cast<ItemHandler*>(script->getMother()));
+            std::unique_ptr<Commander> commander=std::make_unique<Commander>("app0:/assets/spritesheet.png",0,0,std::vector<std::vector<int>>{{10,5,18,18}},0,0,std::vector<std::string>{},std::vector<std::string>{"Commander","Follower"});
+            std::unique_ptr<Node> Follower=std::make_unique<Node>("app0:/assets/spritesheet.png",0,0,std::vector<std::vector<int>>{{10,26,18,18}},0,0,std::vector<std::string>{"Follower","Node"},std::vector<std::string>{"Follower"});
+            commander->getLastNode()->setFollower(Follower.get());
+            commander->setLastNode(Follower.get());
+            g1.addItem(std::move(commander),static_cast<Map*>(script->getMother()));
+            g1.addItem(std::move(Follower),static_cast<Map*>(script->getMother()));
         }
         vita2d_draw_rectangle(0,0,960,544,RGBA8(255,255,255,255)); 
         vita2d_pvf_draw_text(g1.getPvf(),800,50,RGBA8(0,0,0,255),1.0f,std::to_string(static_cast<Map*>(script->getMother())->getScore()).c_str());
@@ -59,7 +58,7 @@ int main(){/*
         vita2d_pvf_draw_text(g1.getPvf(),420,200,RGBA8(0,0,0,255),1.0f,"Game over !");
         if(g1.getMainInputManager()->checkClicked("cross")){
             g1.removeItem(0,&g1);
-            g1.addItem(new Map({"map"},{"MapScript"}),&g1);
+            g1.addItem(std::make_unique<Map>(std::vector<std::string>{"map"},std::vector<std::string>{"MapScript"}),&g1);
         }
     },0,1,0,false));
 
@@ -84,7 +83,7 @@ int main(){/*
             Node* follower=static_cast<Node*>(i); 
             if(detectInbound(target->getX()+5,target->getY()+5,target->getWidth()-5,target->getHeight()-5,follower->getX()+5,follower->getY()+5,follower->getWidth()-5,follower->getHeight()-5)&&playerItemHandler->getScore()>0&&!target->getGameOver()){
                 g1.removeItem(0,&g1);
-                g1.addItem(new ItemHandler({"gameOverScreen"},{"gameOverScreenScript"}),&g1);
+                g1.addItem(std::make_unique<ItemHandler>(std::vector<std::string>{"gameOverScreen"},std::vector<std::string>{"gameOverScreenScript"}),&g1);
                 target->setGameOver(true);
             }
         }
@@ -93,12 +92,12 @@ int main(){/*
         if(Apples.size()>0){
             AnimatedImage* Apple=static_cast<AnimatedImage*>(Apples[0]);
             if(detectInbound(target->getX(),target->getY(),target->getWidth(),target->getHeight(),Apple->getX(),Apple->getY(),Apple->getWidth(),Apple->getHeight())){
-                g1.addItem(new AnimatedImage("app0:/assets/spritesheet.png",randX(gen),randY(gen),{{10,47,18,18}},0,0,{"Enemy"},{}),playerItemHandler);
+                g1.addItem(std::make_unique<AnimatedImage>("app0:/assets/spritesheet.png",randX(gen),randY(gen),std::vector<std::vector<int>>{{10,47,18,18}},0,0,std::vector<std::string>{"Enemy"},std::vector<std::string>{}),playerItemHandler);
                 g1.removeItem(Apple->getArrayId(),static_cast<Map*>(Apple->getMother()));
-                Node* Follower=new Node("app0:/assets/spritesheet.png",target->getLastNode()->getX(),target->getLastNode()->getY(),{{10,26,18,18}},0,0,{"Follower","Node"},{"Follower"});
-                target->getLastNode()->setFollower(Follower);
-                target->setLastNode(Follower);
-                g1.addItem(Follower,playerItemHandler);
+                std::unique_ptr<Node> Follower=std::make_unique<Node>("app0:/assets/spritesheet.png",target->getLastNode()->getX(),target->getLastNode()->getY(),std::vector<std::vector<int>>{{10,26,18,18}},0,0,std::vector<std::string>{"Follower","Node"},std::vector<std::string>{"Follower"});
+                target->getLastNode()->setFollower(Follower.get());
+                target->setLastNode(Follower.get());
+                g1.addItem(std::move(Follower),playerItemHandler);
                 playerItemHandler->setScore(playerItemHandler->getScore()+1);
             }
         }
@@ -108,7 +107,7 @@ int main(){/*
     g1.getMemoryManager()->addScript("MenuScript",std::make_unique<Script>([&g1](Script* script){
         if(g1.getMainInputManager()->checkClicked("cross")){
             g1.removeItem(0,&g1);
-            g1.addItem(new Map({"map"},{"MapScript"}),&g1);
+            g1.addItem(std::make_unique<Map>(std::vector<std::string>{"map"},std::vector<std::string>{"MapScript"}),&g1);
         }
         vita2d_draw_rectangle(0,0,960,544,RGBA8(255,255,255,255));
         vita2d_pvf_draw_text(g1.getPvf(),420,200,RGBA8(0,0,0,255),1.0f,"Snake !");
@@ -117,7 +116,7 @@ int main(){/*
     Camera c1({{0,0,960,544}},0,0);
     g1.getMemoryManager()->addImg("app0:/assets/spritesheet.png");
     g1.setCameras({&c1});
-    g1.addItem(new ItemHandler({"Menu"},{"MenuScript"}),&g1);
-    g1.gameLoop();*/
+    g1.addItem(std::make_unique<ItemHandler>(std::vector<std::string>{"Menu"},std::vector<std::string>{"MenuScript"}),&g1);
+    g1.gameLoop();
     return 0;
 }

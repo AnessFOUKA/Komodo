@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string.h>
 #include <chrono>
+#include <memory>
 class GameObject;
 class Camera;
 class Game;

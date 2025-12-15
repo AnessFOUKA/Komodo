@@ -9,8 +9,8 @@ class GameObject{
         std::vector<Script> scriptsList;
         //les scripts est ajouté à create
         bool isJustCreated;
-        GameObject* mother;
-        GameObject* gameInstance;
+        ItemHandler* mother;
+        Game* gameInstance;
         int arrayId;
         std::vector<Camera*> cameras;
     public:
@@ -31,10 +31,10 @@ class GameObject{
         virtual bool getIsJustCreated();
         virtual void setIsJustCreated(bool isJustCreated);
 
-        virtual GameObject* getMother();
-        virtual void setMother(GameObject* mother);
-        virtual GameObject* getGameInstance();
-        virtual void setGameInstance(GameObject* gameInstance);
+        virtual ItemHandler* getMother();
+        virtual void setMother(ItemHandler* mother);
+        virtual Game* getGameInstance();
+        virtual void setGameInstance(Game* gameInstance);
         virtual void addScript(std::string scriptId,MemoryManager* memoryManager);
         virtual void create();
         virtual void step();

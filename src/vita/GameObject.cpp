@@ -29,19 +29,19 @@ void GameObject::setIsJustCreated(bool isJustCreated){
     this->isJustCreated=isJustCreated;
 }
 
-GameObject* GameObject::getMother(){
+ItemHandler* GameObject::getMother(){
     return mother;
 }
 
-void GameObject::setMother(GameObject* mother){
+void GameObject::setMother(ItemHandler* mother){
     this->mother=mother;
 }
 
-GameObject* GameObject::getGameInstance(){
+Game* GameObject::getGameInstance(){
     return gameInstance;
 }
 
-void GameObject::setGameInstance(GameObject* gameInstance){
+void GameObject::setGameInstance(Game* gameInstance){
     this->gameInstance=gameInstance;
 }
 

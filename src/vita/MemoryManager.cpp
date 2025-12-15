@@ -33,16 +33,14 @@ vita2d_texture* MemoryManager::getImg(std::string filename){
 }
 
 Script* MemoryManager::getScript(std::string scriptId){
-    return scriptsMem[scriptId];
+    return scriptsMem[scriptId].get();
 }
 
-void MemoryManager::addScript(std::string scriptId,Script* newScript){
-    scriptsMem[scriptId]=newScript;
+void MemoryManager::addScript(std::string scriptId,std::unique_ptr<Script> newScript){
+    scriptsMem[scriptId]=std::move(newScript);
 }
 void MemoryManager::removeScript(std::string scriptId){
-    Script* script=scriptsMem[scriptId];
     scriptsMem.erase(scriptId);
-    delete script;
 }
 
 void MemoryManager::clearMems(){

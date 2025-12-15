@@ -3,7 +3,7 @@
 #include "Map.h"
 #include <fstream>
 #include <random>
-int main(){
+int main(){/*
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution randX(0,800);
@@ -18,8 +18,7 @@ int main(){
         {"circle",SCE_CTRL_CIRCLE},
         {"triangle",SCE_CTRL_TRIANGLE}
     });
-    
-    g1.getMemoryManager()->addScript("Follower",new Script([](Script* script){
+    g1.getMemoryManager()->addScript("Follower",std::make_unique<Script>([](Script* script){
         Node* target=static_cast<Node*>(script->getMother());
         if(target->getFollower()!=nullptr){
             target->getFollower()->setRecordPositions(target->getRecordPositions());
@@ -39,7 +38,7 @@ int main(){
         target->setY(target->getY()+target->getSpeedVector()->y);
     },0,1,0,false));
 
-    g1.getMemoryManager()->addScript("MapScript",new Script([&g1,&randX,&randY,&gen](Script* script){
+    g1.getMemoryManager()->addScript("MapScript",std::make_unique<Script>([&g1,&randX,&randY,&gen](Script* script){
         if(script->checkCondition(0)){
             g1.addItem(new AnimatedImage("app0:/assets/spritesheet.png",randX(gen),randY(gen),{{10,47,18,18}},0,0,{"Enemy"},{}),static_cast<ItemHandler*>(script->getMother()));
             Commander* commander=new Commander("app0:/assets/spritesheet.png",0,0,{{10,5,18,18}},0,0,{},{"Commander","Follower"});
@@ -55,7 +54,7 @@ int main(){
     },0,1,0,false));
     g1.getMemoryManager()->getScript("MapScript")->createCondition(0);
 
-    g1.getMemoryManager()->addScript("gameOverScreenScript",new Script([&g1,&randX,&randY,&gen](Script* script){
+    g1.getMemoryManager()->addScript("gameOverScreenScript",std::make_unique<Script>([&g1,&randX,&randY,&gen](Script* script){
         vita2d_draw_rectangle(0,0,960,544,RGBA8(255,255,255,255));
         vita2d_pvf_draw_text(g1.getPvf(),420,200,RGBA8(0,0,0,255),1.0f,"Game over !");
         if(g1.getMainInputManager()->checkClicked("cross")){
@@ -64,7 +63,7 @@ int main(){
         }
     },0,1,0,false));
 
-    g1.getMemoryManager()->addScript("Commander",new Script([&g1,&randX,&randY,&gen](Script* script){
+    g1.getMemoryManager()->addScript("Commander",std::make_unique<Script>([&g1,&randX,&randY,&gen](Script* script){
         Commander* target=static_cast<Commander*>(script->getMother());
         Game* gameInstance=static_cast<Game*>(target->getGameInstance());
         std::unordered_map<std::string,SpeedVector> directions={
@@ -106,7 +105,7 @@ int main(){
 
     },0,1,0,false));
 
-    g1.getMemoryManager()->addScript("MenuScript",new Script([&g1](Script* script){
+    g1.getMemoryManager()->addScript("MenuScript",std::make_unique<Script>([&g1](Script* script){
         if(g1.getMainInputManager()->checkClicked("cross")){
             g1.removeItem(0,&g1);
             g1.addItem(new Map({"map"},{"MapScript"}),&g1);
@@ -119,6 +118,6 @@ int main(){
     g1.getMemoryManager()->addImg("app0:/assets/spritesheet.png");
     g1.setCameras({&c1});
     g1.addItem(new ItemHandler({"Menu"},{"MenuScript"}),&g1);
-    g1.gameLoop();
+    g1.gameLoop();*/
     return 0;
 }

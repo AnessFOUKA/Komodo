@@ -120,3 +120,15 @@ int main(){
     g1.gameLoop();
     return 0;
 }
+
+/*
+organisation :
+
+classe Collider:
+	-x
+	-y 
+	-width
+	-heigth
+	-checkCollision(Collider* collider) -> struct{up:bool,down:bool,left:bool,right:bool,contact:bool}
+chaque instance de collider est stockée dans une liste de colliders dans un gameObject
+*/

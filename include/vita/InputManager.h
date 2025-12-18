@@ -1,6 +1,6 @@
 #ifndef INPUTMANAGER_H
 #define INPUTMANAGER_H
-#include "modulesHandler.h"
+#include "Collider.h"
 class InputManager{
     private:
         std::map<std::string,uint32_t> keys;

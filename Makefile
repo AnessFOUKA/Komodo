@@ -1,6 +1,6 @@
 INC = include
 SRC = src
-OBJS = src/main.o src/vita/Script.o src/vita/modulesHandler.o src/vita/MemoryManager.o src/vita/GameObject.o src/vita/ItemHandler.o src/vita/Game.o src/vita/InputManager.o src/vita/Engine.o src/vita/AnimatedImage.o src/vita/Camera.o src/vita/Collider.o src/sampleClasses/Commander.o src/sampleClasses/Map.o src/sampleClasses/Node.o
+OBJS = src/main.o src/vita/Script.o src/vita/modulesHandler.o src/vita/MemoryManager.o src/vita/GameObject.o src/vita/ItemHandler.o src/vita/Game.o src/vita/InputManager.o src/vita/Engine.o src/vita/AnimatedImage.o src/vita/Camera.o src/vita/Collider.o src/sampleClasses/Commander.o src/sampleClasses/Map.o src/sampleClasses/Node.o src/sampleClasses/Apple.o
 LIBS = -lvita2d -lSceDisplay_stub -lSceGxm_stub -lSceSysmodule_stub -lSceCtrl_stub -lScePgf_stub -lScePvf_stub -lSceCommonDialog_stub -lpng -ljpeg -lfreetype -lz -lm -lc -lSceAppMgr_stub 
 TARGET = myApp
 TITLE_ID=MYAPP0001

@@ -11,6 +11,7 @@
 #include <string.h>
 #include <chrono>
 #include <memory>
+#include <cmath>
 class GameObject;
 class Camera;
 class Game;

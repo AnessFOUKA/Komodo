@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "Commander.h"
+#include "Apple.h"
 #include "Map.h"
 #include <fstream>
 #include <random>
@@ -40,7 +41,7 @@ int main(){
 
     g1.getMemoryManager()->addScript("MapScript",std::make_unique<Script>([&g1,&randX,&randY,&gen](Script* script){
         if(script->checkCondition(0)){
-            g1.addItem(std::make_unique<AnimatedImage>("app0:/assets/spritesheet.png",randX(gen),randY(gen),std::vector<std::vector<int>>{{10,47,18,18}},0,0,std::vector<std::string>{"Enemy"},std::vector<std::string>{}),static_cast<ItemHandler*>(script->getMother()));
+            g1.addItem(std::make_unique<Apple>("app0:/assets/spritesheet.png",randX(gen),randY(gen),std::vector<std::vector<int>>{{10,47,18,18}},0,0,std::vector<std::string>{"Enemy"},std::vector<std::string>{"Apple"}),static_cast<ItemHandler*>(script->getMother()));
             std::unique_ptr<Commander> commander=std::make_unique<Commander>("app0:/assets/spritesheet.png",0,0,std::vector<std::vector<int>>{{10,5,18,18}},0,0,std::vector<std::string>{},std::vector<std::string>{"Commander","Follower"});
             std::unique_ptr<Node> Follower=std::make_unique<Node>("app0:/assets/spritesheet.png",0,0,std::vector<std::vector<int>>{{10,26,18,18}},0,0,std::vector<std::string>{"Follower","Node"},std::vector<std::string>{"Follower"});
             commander->getLastNode()->setFollower(Follower.get());
@@ -62,8 +63,20 @@ int main(){
         }
     },0,1,0,false));
 
+    g1.getMemoryManager()->addScript("Apple",std::make_unique<Script>([&g1,&randX,&randY,&gen](Script* script){
+        Apple* target=static_cast<Apple*>(script->getMother());
+        target->getCollider()->setX(target->getX());
+        target->getCollider()->setY(target->getY());
+        target->getCollider()->setWidth(target->getWidth());
+        target->getCollider()->setHeight(target->getHeight());
+    },0,1,0,false));
+
     g1.getMemoryManager()->addScript("Commander",std::make_unique<Script>([&g1,&randX,&randY,&gen](Script* script){
         Commander* target=static_cast<Commander*>(script->getMother());
+        target->getCollider()->setX(target->getX());
+        target->getCollider()->setY(target->getY());
+        target->getCollider()->setWidth(target->getWidth());
+        target->getCollider()->setHeight(target->getHeight());
         Game* gameInstance=static_cast<Game*>(target->getGameInstance());
         std::unordered_map<std::string,SpeedVector> directions={
             {"left",{-300.0f*gameInstance->getDt(),0}},
@@ -90,10 +103,10 @@ int main(){
 
         std::vector<GameObject*> Apples=playerItemHandler->getElementById("Enemy");
         if(Apples.size()>0){
-            AnimatedImage* Apple=static_cast<AnimatedImage*>(Apples[0]);
-            if(detectInbound(target->getX(),target->getY(),target->getWidth(),target->getHeight(),Apple->getX(),Apple->getY(),Apple->getWidth(),Apple->getHeight())){
-                g1.addItem(std::make_unique<AnimatedImage>("app0:/assets/spritesheet.png",randX(gen),randY(gen),std::vector<std::vector<int>>{{10,47,18,18}},0,0,std::vector<std::string>{"Enemy"},std::vector<std::string>{}),playerItemHandler);
-                g1.removeItem(Apple->getArrayId(),static_cast<Map*>(Apple->getMother()));
+            Apple* apple=static_cast<Apple*>(Apples[0]);
+            if(target->getCollider()->checkCollision(apple->getCollider()).collideTrue){
+                g1.addItem(std::make_unique<Apple>("app0:/assets/spritesheet.png",randX(gen),randY(gen),std::vector<std::vector<int>>{{10,47,18,18}},0,0,std::vector<std::string>{"Enemy"},std::vector<std::string>{"Apple"}),playerItemHandler);
+                g1.removeItem(apple->getArrayId(),static_cast<Map*>(apple->getMother()));
                 std::unique_ptr<Node> Follower=std::make_unique<Node>("app0:/assets/spritesheet.png",target->getLastNode()->getX(),target->getLastNode()->getY(),std::vector<std::vector<int>>{{10,26,18,18}},0,0,std::vector<std::string>{"Follower","Node"},std::vector<std::string>{"Follower"});
                 target->getLastNode()->setFollower(Follower.get());
                 target->setLastNode(Follower.get());

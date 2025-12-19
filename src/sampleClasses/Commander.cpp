@@ -14,3 +14,10 @@ void Commander::setGameOver(bool gameOver){
 bool Commander::getGameOver(){
     return gameOver;
 }
+
+Collider* Commander::getCollider(){
+    return &collider;
+}
+void Commander::setCollider(Collider collider){
+    this->collider=collider;
+}

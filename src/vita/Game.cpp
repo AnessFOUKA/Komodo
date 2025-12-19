@@ -58,7 +58,7 @@ std::unordered_map<std::string,std::vector<GraphicOrder>> Game::getGraphicPipeli
     return graphicPipeline;
 }
 
-void Game::addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeight){
+void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight){
     GraphicOrder graphicOrder={x,y,imageX,imageY,imageWidth,imageHeight};
     if(graphicPipeline.find(imgId)!=graphicPipeline.end()){
         graphicPipeline[imgId].push_back(graphicOrder);

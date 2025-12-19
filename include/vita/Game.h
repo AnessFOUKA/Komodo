@@ -4,12 +4,12 @@
 using high_resolution_clock=std::chrono::high_resolution_clock;
 
 struct GraphicOrder{
-    int x;
-    int y;
-    int imageX;
-    int imageY;
-    int imageWidth;
-    int imageHeight;
+    float x;
+    float y;
+    float imageX;
+    float imageY;
+    float imageWidth;
+    float imageHeight;
 };
 
 class Game : public ItemHandler{
@@ -35,7 +35,7 @@ class Game : public ItemHandler{
         MemoryManager* getMemoryManager();
         InputManager* getMainInputManager();
         std::unordered_map<std::string,std::vector<GraphicOrder>> getGraphicPipeline();
-        void addGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeight);
+        void addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight);
         void readGraphicPipeline();
         void gameLoop();
         void addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandler);

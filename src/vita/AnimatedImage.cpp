@@ -9,7 +9,7 @@ float AnimatedImage::getX(){
 float AnimatedImage::getY(){
     return y;
 }
-std::vector<std::vector<int>> AnimatedImage::getImageCoords(){
+std::vector<std::vector<float>> AnimatedImage::getImageCoords(){
     return imageCoords;
 }
 float AnimatedImage::getImageCoordsIndex(){
@@ -28,7 +28,7 @@ void AnimatedImage::setX(float x){
 void AnimatedImage::setY(float y){
     this->y=y;
 }
-void AnimatedImage::setImageCoords(std::vector<std::vector<int>> imageCoords){
+void AnimatedImage::setImageCoords(std::vector<std::vector<float>> imageCoords){
     this->imageCoords=imageCoords;
 }
 void AnimatedImage::setImageCoordsIndex(float imageCoordsIndex){
@@ -42,11 +42,11 @@ void AnimatedImage::step(){
     for(auto& i:scriptsList){
         i.loadScript();
     }
-    std::vector<int>& imageCoord=imageCoords[(int)imageCoordsIndex];
-    int& imageX=imageCoord[0];
-    int& imageY=imageCoord[1];
-    int& imageWidth=imageCoord[2];
-    int& imageHeight=imageCoord[3];
+    std::vector<float>& imageCoord=imageCoords[(int)imageCoordsIndex];
+    float& imageX=imageCoord[0];
+    float& imageY=imageCoord[1];
+    float& imageWidth=imageCoord[2];
+    float& imageHeight=imageCoord[3];
     int imageCoordsSize=imageCoords.size();
     Game* trueGameInstance=static_cast<Game*>(gameInstance);
     width=imageWidth;

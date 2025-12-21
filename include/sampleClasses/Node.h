@@ -13,8 +13,8 @@ class Node : public AnimatedImage{
         bool recordPositions;
         SpeedVector speedVector;
     public:
-        Node(std::string imgId,int x,int y,std::vector<std::vector<float>> imageCoords,float imageCoordsIndex,float animationSpeed,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
-            AnimatedImage(imgId,x,y,imageCoords,imageCoordsIndex,animationSpeed,idsList,scriptsIds),
+        Node(std::string imgId,int x,int y,std::vector<std::vector<float>> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
+            AnimatedImage(imgId,x,y,imageCoords,imageCoordsIndex,animationSpeed,scaleX,scaleY,idsList,scriptsIds),
             positions({}),
             follower(nullptr),
             recordPositions(true),

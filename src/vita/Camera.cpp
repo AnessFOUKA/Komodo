@@ -1,21 +1,21 @@
 #include <Camera.h>
 
-std::vector<std::vector<int>> Camera::getRenderers(){
+std::vector<std::vector<float>> Camera::getRenderers(){
     return renderers;
 }
-int Camera::getCameraX(){
+float Camera::getCameraX(){
     return cameraX;
 }
-int Camera::getCameraY(){
+float Camera::getCameraY(){
     return cameraY;
 }
 
-void Camera::setRenderers(std::vector<std::vector<int>> renderers){
+void Camera::setRenderers(std::vector<std::vector<float>> renderers){
     this->renderers=renderers;
 }
-void Camera::setCameraX(int cameraX){
+void Camera::setCameraX(float cameraX){
     this->cameraX=cameraX;
 }
-void Camera::setCameraY(int cameraY){
+void Camera::setCameraY(float cameraY){
     this->cameraY=cameraY;
 }

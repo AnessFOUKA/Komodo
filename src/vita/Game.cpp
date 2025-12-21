@@ -58,8 +58,8 @@ std::unordered_map<std::string,std::vector<GraphicOrder>> Game::getGraphicPipeli
     return graphicPipeline;
 }
 
-void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight){
-    GraphicOrder graphicOrder={x,y,imageX,imageY,imageWidth,imageHeight};
+void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY){
+    GraphicOrder graphicOrder={x,y,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY};
     if(graphicPipeline.find(imgId)!=graphicPipeline.end()){
         graphicPipeline[imgId].push_back(graphicOrder);
     }else{
@@ -71,7 +71,7 @@ void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float 
 void Game::readGraphicPipeline(){
     for(auto& [imgId, pipeGraphicOrders] : graphicPipeline){
         for(auto& order : pipeGraphicOrders){
-            vita2d_draw_texture_part_scale(mainMemoryManager.getImg(imgId),order.x,order.y,order.imageX,order.imageY,order.imageWidth,order.imageHeight,1,1);
+            vita2d_draw_texture_part_scale(mainMemoryManager.getImg(imgId),order.x,order.y,order.imageX,order.imageY,order.imageWidth,order.imageHeight,order.scaleX,order.scaleY);
         }
     }
     graphicPipeline.clear();
@@ -92,46 +92,47 @@ void Script::loadScript(){
     }
 };
 
-void Camera::pushCameraGraphicOrder(std::string imgId,int x,int y,int imageX,int imageY,int imageWidth,int imageHeight,Game* gameInstance){
+void Camera::pushCameraGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY,Game* gameInstance){
     for(auto renderer : renderers){
-        int rendererX=renderer[0];
-        int rendererY=renderer[1];
-        int rendererWidth=renderer[2];
-        int rendererHeight=renderer[3];
-        if(detectInbound(x,y,imageWidth,imageHeight,rendererX,rendererY,rendererWidth,rendererHeight)){
-            int worldXTemp=x-(cameraX-rendererX);
-            int worldYTemp=y-(cameraY-rendererY);
-            int imageXTemp=imageX;
-            int imageYTemp=imageY;
-            int imageWidthTemp=imageWidth;
-            int imageHeightTemp=imageHeight;
+        float rendererX=renderer[0];
+        float rendererY=renderer[1];
+        float rendererWidth=renderer[2];
+        float rendererHeight=renderer[3];
+        if(detectInbound(x,y,imageWidth*scaleX,imageHeight*scaleY,cameraX,cameraY,rendererWidth,rendererHeight)){
+            float worldX=x-(cameraX-rendererX);
+            float worldY=y-(cameraY-rendererY);
+            float imageXTemp=imageX;
+            float imageYTemp=imageY;
+            float imageWidthTemp=imageWidth;
+            float imageHeightTemp=imageHeight;
 
-            if(worldXTemp<rendererX){
-                int overflow=rendererX-worldXTemp;
-                imageXTemp+=overflow;
-                imageWidthTemp-=overflow;
-                worldXTemp=rendererX;
+            if(worldX<rendererX){
+                float overflow=rendererX-worldX;
+                float downscaledOverflow=overflow/scaleX;
+                imageXTemp+=downscaledOverflow;
+                imageWidthTemp-=downscaledOverflow;
+                worldX=rendererX;
             }
 
-            if(worldYTemp<rendererY){
-                int overflow=rendererY-worldYTemp;
-                imageYTemp+=overflow;
-                imageHeightTemp-=overflow;
-                worldYTemp=rendererY;
+            if(worldY<rendererY){
+                float overflow=rendererY-worldY;
+                float downscaledOverflow=overflow/scaleY;
+                imageYTemp+=downscaledOverflow;
+                imageHeightTemp-=downscaledOverflow;
+                worldY=rendererY;
             }
 
-            if(worldXTemp+imageWidthTemp>rendererX+rendererWidth){
-                int overflow=(worldXTemp+imageWidthTemp)-(rendererX+rendererWidth);
-                imageWidthTemp-=overflow;
+            if(worldX+imageWidthTemp*scaleX>rendererX+rendererWidth){
+                float overflow=(worldX+imageWidthTemp*scaleX)-(rendererX+rendererWidth);
+                imageWidthTemp-=(overflow/scaleX);
             }
 
-            if(worldYTemp+imageHeightTemp>rendererY+rendererHeight){
-                int overflow=(worldYTemp+imageHeightTemp)-(rendererY+rendererHeight);
-                imageHeightTemp-=overflow;
+            if(worldY+imageHeightTemp*scaleY>rendererY+rendererHeight){
+                float overflow=(worldY+imageHeightTemp*scaleY)-(rendererX+rendererWidth);
+                imageHeightTemp-=(overflow/scaleY);
             }
 
-            gameInstance->addGraphicOrder(imgId,worldXTemp,worldYTemp,imageXTemp,imageYTemp,imageWidthTemp,imageHeightTemp);
-
+            gameInstance->addGraphicOrder(imgId,worldX,worldY,imageXTemp,imageYTemp,imageWidthTemp,imageHeightTemp,scaleX,scaleY);
         }
     }
 }

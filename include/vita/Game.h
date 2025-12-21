@@ -10,6 +10,8 @@ struct GraphicOrder{
     float imageY;
     float imageWidth;
     float imageHeight;
+    float scaleX;
+    float scaleY;
 };
 
 class Game : public ItemHandler{
@@ -35,7 +37,7 @@ class Game : public ItemHandler{
         MemoryManager* getMemoryManager();
         InputManager* getMainInputManager();
         std::unordered_map<std::string,std::vector<GraphicOrder>> getGraphicPipeline();
-        void addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight);
+        void addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY);
         void readGraphicPipeline();
         void gameLoop();
         void addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandler);

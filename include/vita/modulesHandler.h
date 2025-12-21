@@ -15,5 +15,5 @@
 class GameObject;
 class Camera;
 class Game;
-bool detectInbound(int x1,int y1,int width1,int heigth1,int x2,int y2,int width2,int heigth2);
+bool detectInbound(float x1,float y1,float width1,float heigth1,float x2,float y2,float width2,float heigth2);
 #endif

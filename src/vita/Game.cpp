@@ -128,7 +128,7 @@ void Camera::pushCameraGraphicOrder(std::string imgId,float x,float y,float imag
             }
 
             if(worldY+imageHeightTemp*scaleY>rendererY+rendererHeight){
-                float overflow=(worldY+imageHeightTemp*scaleY)-(rendererX+rendererWidth);
+                float overflow=(worldY+imageHeightTemp*scaleY)-(rendererY+rendererHeight);
                 imageHeightTemp-=(overflow/scaleY);
             }
 

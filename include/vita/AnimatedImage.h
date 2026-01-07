@@ -30,7 +30,7 @@ class AnimatedImage : public GameObject{
         std::string getImgId();
         float getX();
         float getY();
-        std::vector<std::vector<float>> getImageCoords();
+        std::vector<std::vector<float>>* getImageCoords();
         float getImageCoordsIndex();
         float getAnimationSpeed();
         float getWidth();

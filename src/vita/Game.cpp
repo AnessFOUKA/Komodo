@@ -36,11 +36,11 @@ void Game::addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandle
     newObject->setGameInstance(this);
     newObject->setMother(itemHandler);
     newObject->setArrayId(itemHandler->getElements()->size());
-    std::vector<Camera*> newObjectCameras=newObject->getCameras();
-    std::vector<Camera*> itemHandlerCameras=itemHandler->getCameras();
+    std::vector<Camera*> newObjectCameras=*(newObject->getCameras());
+    std::vector<Camera*> itemHandlerCameras=*(itemHandler->getCameras());
     itemHandlerCameras.insert(itemHandlerCameras.end(),newObjectCameras.begin(),newObjectCameras.end());
     newObject->setCameras(itemHandlerCameras);
-    for(std::string i : newObject->getScriptsIds()){
+    for(std::string i : *(newObject->getScriptsIds())){
         newObject->addScript(i,&mainMemoryManager);
     }
     itemHandler->getAddPipeline()->push_back(std::move(newObject));
@@ -54,8 +54,8 @@ InputManager* Game::getMainInputManager(){
     return &mainInputManager;
 }
 
-std::unordered_map<std::string,std::vector<GraphicOrder>> Game::getGraphicPipeline(){
-    return graphicPipeline;
+std::unordered_map<std::string,std::vector<GraphicOrder>>* Game::getGraphicPipeline(){
+    return &graphicPipeline;
 }
 
 void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY){

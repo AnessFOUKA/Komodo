@@ -1,14 +1,14 @@
 #include "GameObject.h"
-std::vector<std::string> GameObject::getIdsList(){
-    return idsList;
+std::vector<std::string>* GameObject::getIdsList(){
+    return &idsList;
 }
 
 void GameObject::setIdsList(std::vector<std::string> idsList){
     this->idsList=idsList;
 }
 
-std::vector<std::string> GameObject::getScriptsIds(){
-    return scriptsIds;
+std::vector<std::string>* GameObject::getScriptsIds(){
+    return &scriptsIds;
 }
 
 void GameObject::create(){
@@ -51,8 +51,8 @@ void GameObject::addScript(std::string scriptId,MemoryManager* memoryManager){
     this->scriptsList.push_back(newScript);
 }
 
-std::vector<Camera*> GameObject::getCameras(){
-    return cameras;
+std::vector<Camera*>* GameObject::getCameras(){
+    return &cameras;
 }
 void GameObject::setCameras(std::vector<Camera*> cameras){
     this->cameras=cameras;

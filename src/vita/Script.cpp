@@ -48,8 +48,8 @@ void Script::setScriptSpeed(float scriptSpeed){
     this->scriptSpeed=scriptSpeed;
 }
 
-std::map<int,bool> Script::getConditionMap(){
-    return conditionMap;
+std::map<int,bool>* Script::getConditionMap(){
+    return &conditionMap;
 }
 
 void Script::setConditionMap(std::map<int,bool> conditionMap){

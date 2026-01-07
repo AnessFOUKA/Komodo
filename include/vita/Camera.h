@@ -12,7 +12,7 @@ class Camera{
             cameraX(cameraX),
             cameraY(cameraY)
         {}
-        std::vector<std::vector<float>> getRenderers();
+        std::vector<std::vector<float>>* getRenderers();
         float getCameraX();
         float getCameraY();
 

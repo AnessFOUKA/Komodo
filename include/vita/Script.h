@@ -30,7 +30,7 @@ class Script{
         bool getLoop();
         GameObject* getMother();
         float getScriptSpeed();
-        std::map<int,bool> getConditionMap();
+        std::map<int,bool>* getConditionMap();
 
         void setScriptFunction(std::function<void(Script*)> scriptFunction);
         void setBeginIndex(float beginIndex);

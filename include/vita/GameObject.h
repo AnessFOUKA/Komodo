@@ -25,9 +25,9 @@ class GameObject{
             cameras({})
         {}
         virtual ~GameObject()=default;
-        virtual std::vector<std::string> getIdsList();
+        virtual std::vector<std::string>* getIdsList();
         virtual void setIdsList(std::vector<std::string> idsList);
-        virtual std::vector<std::string> getScriptsIds();
+        virtual std::vector<std::string>* getScriptsIds();
         virtual bool getIsJustCreated();
         virtual void setIsJustCreated(bool isJustCreated);
 
@@ -39,7 +39,7 @@ class GameObject{
         virtual void create();
         virtual void step();
 
-        virtual std::vector<Camera*> getCameras();
+        virtual std::vector<Camera*>* getCameras();
         virtual void setCameras(std::vector<Camera*> cameras);
         virtual int getArrayId();
         virtual void setArrayId(int arrayId);

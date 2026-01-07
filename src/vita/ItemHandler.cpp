@@ -53,7 +53,7 @@ void ItemHandler::readPipelines(){
 std::vector<GameObject*> ItemHandler::getElementById(std::string id){
     std::vector<GameObject*> gameObjectsList={};
     for(auto& i : elements){
-        std::vector<std::string> list=i->getIdsList();
+        std::vector<std::string> list=*(i->getIdsList());
         if(std::find(list.begin(),list.end(),id)!=list.end()){
             gameObjectsList.push_back(i.get());
         }

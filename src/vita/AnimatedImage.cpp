@@ -9,8 +9,8 @@ float AnimatedImage::getX(){
 float AnimatedImage::getY(){
     return y;
 }
-std::vector<std::vector<float>> AnimatedImage::getImageCoords(){
-    return imageCoords;
+std::vector<std::vector<float>>* AnimatedImage::getImageCoords(){
+    return &imageCoords;
 }
 float AnimatedImage::getImageCoordsIndex(){
     return imageCoordsIndex;
@@ -52,7 +52,7 @@ void AnimatedImage::step(){
     width=imageWidth;
     height=imageHeight;
     if(cameras.size()>0){
-for(auto* i:cameras){
+        for(auto* i:cameras){
             i->pushCameraGraphicOrder(imgId,x,y,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,trueGameInstance);
         }
     }else{

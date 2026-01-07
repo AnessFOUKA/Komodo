@@ -36,7 +36,7 @@ class Game : public ItemHandler{
         vita2d_pvf* getPvf();
         MemoryManager* getMemoryManager();
         InputManager* getMainInputManager();
-        std::unordered_map<std::string,std::vector<GraphicOrder>> getGraphicPipeline();
+        std::unordered_map<std::string,std::vector<GraphicOrder>>* getGraphicPipeline();
         void addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY);
         void readGraphicPipeline();
         void gameLoop();

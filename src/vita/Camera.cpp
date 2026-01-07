@@ -1,7 +1,7 @@
 #include <Camera.h>
 
-std::vector<std::vector<float>> Camera::getRenderers(){
-    return renderers;
+std::vector<std::vector<float>>* Camera::getRenderers(){
+    return &renderers;
 }
 float Camera::getCameraX(){
     return cameraX;

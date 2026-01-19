@@ -7,10 +7,14 @@ class ItemHandler : public GameObject{
         std::vector<std::unique_ptr<GameObject>> elements;
         std::vector<std::unique_ptr<GameObject>> addPipeline;
         std::vector<int> remPipeline;
+        float x;
+        float y;
         void itemRemover(int itemId);
     public: 
-        ItemHandler(std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
-            GameObject(idsList,scriptsIds)
+        ItemHandler(float x,float y,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
+            GameObject(idsList,scriptsIds),
+            x(x),
+            y(y)
         {}
         std::vector<std::unique_ptr<GameObject>>* getElements();
 
@@ -19,5 +23,11 @@ class ItemHandler : public GameObject{
         void readPipelines();
         void step();
         std::vector<GameObject*> getElementById(std::string id);
+        float getX();
+        float getY();
+        void setX(float x);
+        void setY(float y);
+        float getWidth();
+        float getHeight();
 };  
 #endif

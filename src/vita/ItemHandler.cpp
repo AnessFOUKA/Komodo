@@ -4,6 +4,9 @@ std::vector<std::unique_ptr<GameObject>>* ItemHandler::getElements(){
 }
 
 void ItemHandler::step(){
+    ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
+    x+=motherConverted->getX();
+    y+=motherConverted->getY();
     readPipelines();
     for(auto& i:scriptsList){
         i.loadScript();
@@ -24,6 +27,8 @@ void ItemHandler::step(){
     }
     element->step();
    }
+   x-=motherConverted->getX();
+   y-=motherConverted->getY();
 }
 
 std::vector<std::unique_ptr<GameObject>>* ItemHandler::getAddPipeline(){
@@ -59,4 +64,18 @@ std::vector<GameObject*> ItemHandler::getElementById(std::string id){
         }
     }
     return gameObjectsList;
+}
+
+float ItemHandler::getX(){
+    return x;
+}
+float ItemHandler::getY(){
+    return y;
+}
+        
+void ItemHandler::setX(float x){
+    this->x=x;
+}
+void ItemHandler::setY(float y){
+    this->y=y;
 }

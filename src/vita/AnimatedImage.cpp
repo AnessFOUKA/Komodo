@@ -42,6 +42,9 @@ void AnimatedImage::step(){
     for(auto& i:scriptsList){
         i.loadScript();
     }
+    ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
+    float xTemp=x+motherConverted->getX();
+    float yTemp=y+motherConverted->getY();
     std::vector<float>& imageCoord=imageCoords[(int)imageCoordsIndex];
     float& imageX=imageCoord[0];
     float& imageY=imageCoord[1];
@@ -53,10 +56,10 @@ void AnimatedImage::step(){
     height=imageHeight;
     if(cameras.size()>0){
         for(auto* i:cameras){
-            i->pushCameraGraphicOrder(imgId,x,y,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,trueGameInstance);
+            i->pushCameraGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,trueGameInstance);
         }
     }else{
-        trueGameInstance->addGraphicOrder(imgId,x,y,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY);
+        trueGameInstance->addGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY);
     }
     if(imageCoordsIndex<imageCoordsSize){
         imageCoordsIndex+=animationSpeed*trueGameInstance->getDt();
@@ -89,4 +92,38 @@ void AnimatedImage::setScaleX(float scaleX){
 
 void AnimatedImage::setScaleY(float scaleY){
     this->scaleY=scaleY;
+}
+
+float ItemHandler::getWidth(){
+    float width=0;
+    for(auto& item:elements){
+        auto* itemRawPtr=item.get();
+        if(dynamic_cast<ItemHandler*>(itemRawPtr)){
+            width=static_cast<ItemHandler*>(itemRawPtr)->getWidth();
+        }else if(dynamic_cast<AnimatedImage*>(itemRawPtr)){
+            AnimatedImage* animatedImageItemConverted=static_cast<AnimatedImage*>(itemRawPtr);
+            float potentialGreaterCoordinate=animatedImageItemConverted->getX()+animatedImageItemConverted->getWidth();
+            if(potentialGreaterCoordinate>width){
+                width=potentialGreaterCoordinate;
+            }
+        }
+    }
+    return width;
+}
+
+float ItemHandler::getHeight(){
+    float height=0;
+    for(auto& item:elements){
+        auto* itemRawPtr=item.get();
+        if(dynamic_cast<ItemHandler*>(itemRawPtr)){
+            height=static_cast<ItemHandler*>(itemRawPtr)->getHeight();
+        }else if(dynamic_cast<AnimatedImage*>(itemRawPtr)){
+            AnimatedImage* animatedImageItemConverted=static_cast<AnimatedImage*>(itemRawPtr);
+            float potentialGreaterCoordinate=animatedImageItemConverted->getY()+animatedImageItemConverted->getHeight();
+            if(potentialGreaterCoordinate>height){
+                height=potentialGreaterCoordinate;
+            }
+        }
+    }
+    return height;
 }

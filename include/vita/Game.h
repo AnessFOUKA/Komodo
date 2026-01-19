@@ -25,7 +25,7 @@ class Game : public ItemHandler{
         vita2d_pvf* pvf;
     public:
         Game(std::vector<std::string> idsList,std::vector<std::string> scriptsIds,std::map<std::string,uint32_t> keys):
-            ItemHandler(idsList,scriptsIds),
+            ItemHandler(0,0,idsList,scriptsIds),
             mainMemoryManager(),
             mainInputManager(keys),
             graphicPipeline({}),

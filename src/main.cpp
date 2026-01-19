@@ -51,6 +51,7 @@ int main(){
         }
         vita2d_draw_rectangle(0,0,960,544,RGBA8(255,255,255,255)); 
         vita2d_pvf_draw_text(g1.getPvf(),800,50,RGBA8(0,0,0,255),1.0f,std::to_string(static_cast<Map*>(script->getMother())->getScore()).c_str());
+        vita2d_pvf_draw_text(g1.getPvf(),800,200,RGBA8(0,0,0,255),1.0f,std::to_string(static_cast<Map*>(script->getMother())->getHeight()).c_str());
     },0,1,0,false));
     g1.getMemoryManager()->getScript("MapScript")->createCondition(0);
 
@@ -59,7 +60,7 @@ int main(){
         vita2d_pvf_draw_text(g1.getPvf(),420,200,RGBA8(0,0,0,255),1.0f,"Game over !");
         if(g1.getMainInputManager()->checkClicked("cross")){
             g1.removeItem(0,&g1);
-            g1.addItem(std::make_unique<Map>(std::vector<std::string>{"map"},std::vector<std::string>{"MapScript"}),&g1);
+            g1.addItem(std::make_unique<Map>(0,0,std::vector<std::string>{"map"},std::vector<std::string>{"MapScript"}),&g1);
         }
     },0,1,0,false));
 
@@ -96,7 +97,7 @@ int main(){
             Node* follower=static_cast<Node*>(i); 
             if(detectInbound(target->getX()+5,target->getY()+5,target->getWidth()-5,target->getHeight()-5,follower->getX()+5,follower->getY()+5,follower->getWidth()-5,follower->getHeight()-5)&&playerItemHandler->getScore()>0&&!target->getGameOver()){
                 g1.removeItem(0,&g1);
-                g1.addItem(std::make_unique<ItemHandler>(std::vector<std::string>{"gameOverScreen"},std::vector<std::string>{"gameOverScreenScript"}),&g1);
+                g1.addItem(std::make_unique<ItemHandler>(0,0,std::vector<std::string>{"gameOverScreen"},std::vector<std::string>{"gameOverScreenScript"}),&g1);
                 target->setGameOver(true);
             }
         }
@@ -120,7 +121,7 @@ int main(){
     g1.getMemoryManager()->addScript("MenuScript",std::make_unique<Script>([&g1](Script* script){
         if(g1.getMainInputManager()->checkClicked("cross")){
             g1.removeItem(0,&g1);
-            g1.addItem(std::make_unique<Map>(std::vector<std::string>{"map"},std::vector<std::string>{"MapScript"}),&g1);
+            g1.addItem(std::make_unique<Map>(0,0,std::vector<std::string>{"map"},std::vector<std::string>{"MapScript"}),&g1);
         }
         vita2d_draw_rectangle(0,0,960,544,RGBA8(255,255,255,255));
         vita2d_pvf_draw_text(g1.getPvf(),420,200,RGBA8(0,0,0,255),1.0f,"Snake !");
@@ -129,7 +130,7 @@ int main(){
     Camera c1({{0,0,960,544}},0,0);
     g1.getMemoryManager()->addImg("app0:/assets/spritesheet.png");
     g1.setCameras({&c1});
-    g1.addItem(std::make_unique<ItemHandler>(std::vector<std::string>{"Menu"},std::vector<std::string>{"MenuScript"}),&g1);
+    g1.addItem(std::make_unique<ItemHandler>(0,0,std::vector<std::string>{"Menu"},std::vector<std::string>{"MenuScript"}),&g1);
     g1.gameLoop();
     return 0;
 }

@@ -56,10 +56,10 @@ void AnimatedImage::step(){
     height=imageHeight;
     if(cameras.size()>0){
         for(auto* i:cameras){
-            i->pushCameraGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,trueGameInstance);
+            i->pushCameraGraphicOrder(imgId,xTemp*scaleX,yTemp*scaleY,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,trueGameInstance);
         }
     }else{
-        trueGameInstance->addGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY);
+        trueGameInstance->addGraphicOrder(imgId,xTemp*scaleX,yTemp*scaleY,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY);
     }
     if(imageCoordsIndex<imageCoordsSize){
         imageCoordsIndex+=animationSpeed*trueGameInstance->getDt();
@@ -71,11 +71,11 @@ void AnimatedImage::step(){
 }
 
 float AnimatedImage::getWidth(){
-    return width;
+    return width*scaleX;
 }
 
 float AnimatedImage::getHeight(){
-    return height;
+    return height*scaleY;
 }
 
 float AnimatedImage::getScaleX(){

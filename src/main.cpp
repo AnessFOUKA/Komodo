@@ -41,9 +41,9 @@ int main(){
 
     g1.getMemoryManager()->addScript("MapScript",std::make_unique<Script>([&g1,&randX,&randY,&gen](Script* script){
         if(script->checkCondition(0)){
-            g1.addItem(std::make_unique<Apple>("app0:/assets/spritesheet.png",randX(gen),randY(gen),std::vector<std::vector<float>>{{10,47,18,18}},0,0,1,1,std::vector<std::string>{"Enemy"},std::vector<std::string>{"Apple"}),static_cast<ItemHandler*>(script->getMother()));
-            std::unique_ptr<Commander> commander=std::make_unique<Commander>("app0:/assets/spritesheet.png",0,0,std::vector<std::vector<float>>{{10,5,18,18}},0,0,1,1,std::vector<std::string>{},std::vector<std::string>{"Commander","Follower"});
-            std::unique_ptr<Node> Follower=std::make_unique<Node>("app0:/assets/spritesheet.png",0,0,std::vector<std::vector<float>>{{10,26,18,18}},0,0,1,1,std::vector<std::string>{"Follower","Node"},std::vector<std::string>{"Follower"});
+            g1.addItem(std::make_unique<Apple>("app0:/assets/spritesheet.png",randX(gen),randY(gen),std::vector<ImageCoord>{{10,47,18,18}},0,0,1,1,std::vector<std::string>{"Enemy"},std::vector<std::string>{"Apple"}),static_cast<ItemHandler*>(script->getMother()));
+            std::unique_ptr<Commander> commander=std::make_unique<Commander>("app0:/assets/spritesheet.png",0,0,std::vector<ImageCoord>{{10,5,18,18}},0,0,1,1,std::vector<std::string>{},std::vector<std::string>{"Commander","Follower"});
+            std::unique_ptr<Node> Follower=std::make_unique<Node>("app0:/assets/spritesheet.png",0,0,std::vector<ImageCoord>{{10,26,18,18}},0,0,1,1,std::vector<std::string>{"Follower","Node"},std::vector<std::string>{"Follower"});
             commander->getLastNode()->setFollower(Follower.get());
             commander->setLastNode(Follower.get());
             g1.addItem(std::move(commander),static_cast<Map*>(script->getMother()));
@@ -106,9 +106,9 @@ int main(){
         if(Apples.size()>0){
             Apple* apple=static_cast<Apple*>(Apples[0]);
             if(target->getCollider()->checkCollision(apple->getCollider()).collideTrue){
-                g1.addItem(std::make_unique<Apple>("app0:/assets/spritesheet.png",randX(gen),randY(gen),std::vector<std::vector<float>>{{10,47,18,18}},0,0,1,1,std::vector<std::string>{"Enemy"},std::vector<std::string>{"Apple"}),playerItemHandler);
+                g1.addItem(std::make_unique<Apple>("app0:/assets/spritesheet.png",randX(gen),randY(gen),std::vector<ImageCoord>{{10,47,18,18}},0,0,1,1,std::vector<std::string>{"Enemy"},std::vector<std::string>{"Apple"}),playerItemHandler);
                 g1.removeItem(apple->getArrayId(),static_cast<Map*>(apple->getMother()));
-                std::unique_ptr<Node> Follower=std::make_unique<Node>("app0:/assets/spritesheet.png",target->getLastNode()->getX(),target->getLastNode()->getY(),std::vector<std::vector<float>>{{10,26,18,18}},0,0,1,1,std::vector<std::string>{"Follower","Node"},std::vector<std::string>{"Follower"});
+                std::unique_ptr<Node> Follower=std::make_unique<Node>("app0:/assets/spritesheet.png",target->getLastNode()->getX(),target->getLastNode()->getY(),std::vector<ImageCoord>{{10,26,18,18}},0,0,1,1,std::vector<std::string>{"Follower","Node"},std::vector<std::string>{"Follower"});
                 target->getLastNode()->setFollower(Follower.get());
                 target->setLastNode(Follower.get());
                 g1.addItem(std::move(Follower),playerItemHandler);

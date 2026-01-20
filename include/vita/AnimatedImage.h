@@ -1,12 +1,20 @@
 #ifndef ANIMATEDIMAGE_H
 #define ANIMATEDIMAGE_H
 #include "Game.h"
+struct ImageCoord{
+    float x;
+    float y;
+    float width;
+    float height;
+    float frameTimeIndex;
+    float frameTimeMax;
+};
 class AnimatedImage : public GameObject{
     protected:
         std::string imgId;
         float x;
         float y;
-        std::vector<std::vector<float>> imageCoords;
+        std::vector<ImageCoord> imageCoords;
         float imageCoordsIndex;
         float animationSpeed;
         float width;
@@ -14,15 +22,15 @@ class AnimatedImage : public GameObject{
         float scaleX;
         float scaleY;
     public:
-        AnimatedImage(std::string imgId,float x,float y,std::vector<std::vector<float>> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
+        AnimatedImage(std::string imgId,float x,float y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
             imgId(imgId),
             x(x),
             y(y),
             imageCoords(imageCoords),
             imageCoordsIndex(imageCoordsIndex),
             animationSpeed(animationSpeed),
-            width(imageCoords[imageCoordsIndex][2]),
-            height(imageCoords[imageCoordsIndex][3]),
+            width(imageCoords[imageCoordsIndex].width),
+            height(imageCoords[imageCoordsIndex].height),
             scaleX(scaleX),
             scaleY(scaleY),
             GameObject(idsList,scriptsIds)
@@ -30,7 +38,7 @@ class AnimatedImage : public GameObject{
         std::string getImgId();
         float getX();
         float getY();
-        std::vector<std::vector<float>>* getImageCoords();
+        std::vector<ImageCoord>* getImageCoords();
         float getImageCoordsIndex();
         float getAnimationSpeed();
         float getWidth();
@@ -43,7 +51,7 @@ class AnimatedImage : public GameObject{
         void setImgId(std::string imgId);
         void setX(float x);
         void setY(float y);
-        void setImageCoords(std::vector<std::vector<float>> imageCoords);
+        void setImageCoords(std::vector<ImageCoord> imageCoords);
         void setImageCoordsIndex(float imageCoordsIndex);
         void setAnimationSpeed(float animationSpeed);
 

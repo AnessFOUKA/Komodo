@@ -9,7 +9,7 @@ class Commander : public Node{
         Collider collider;
 
     public:
-        Commander(std::string imgId,int x,int y,std::vector<std::vector<float>> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
+        Commander(std::string imgId,int x,int y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
             Node(imgId,x,y,imageCoords,imageCoordsIndex,animationSpeed,scaleX,scaleY,idsList,scriptsIds),
             lastNode(this),
             gameOver(false),

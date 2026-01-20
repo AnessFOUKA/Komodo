@@ -9,7 +9,7 @@ float AnimatedImage::getX(){
 float AnimatedImage::getY(){
     return y;
 }
-std::vector<std::vector<float>>* AnimatedImage::getImageCoords(){
+std::vector<ImageCoord>* AnimatedImage::getImageCoords(){
     return &imageCoords;
 }
 float AnimatedImage::getImageCoordsIndex(){
@@ -28,7 +28,7 @@ void AnimatedImage::setX(float x){
 void AnimatedImage::setY(float y){
     this->y=y;
 }
-void AnimatedImage::setImageCoords(std::vector<std::vector<float>> imageCoords){
+void AnimatedImage::setImageCoords(std::vector<ImageCoord> imageCoords){
     this->imageCoords=imageCoords;
 }
 void AnimatedImage::setImageCoordsIndex(float imageCoordsIndex){
@@ -45,11 +45,13 @@ void AnimatedImage::step(){
     ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
     float xTemp=x+motherConverted->getX();
     float yTemp=y+motherConverted->getY();
-    std::vector<float>& imageCoord=imageCoords[(int)imageCoordsIndex];
-    float& imageX=imageCoord[0];
-    float& imageY=imageCoord[1];
-    float& imageWidth=imageCoord[2];
-    float& imageHeight=imageCoord[3];
+    ImageCoord& imageCoord=imageCoords[(int)imageCoordsIndex];
+    float& imageX=imageCoord.x;
+    float& imageY=imageCoord.y;
+    float& imageWidth=imageCoord.width;
+    float& imageHeight=imageCoord.height;
+    float& frameTimeMax=imageCoord.frameTimeMax;
+    float& frameTimeIndex=imageCoord.frameTimeIndex;
     int imageCoordsSize=imageCoords.size();
     Game* trueGameInstance=static_cast<Game*>(gameInstance);
     width=imageWidth;
@@ -61,8 +63,13 @@ void AnimatedImage::step(){
     }else{
         trueGameInstance->addGraphicOrder(imgId,xTemp*scaleX,yTemp*scaleY,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY);
     }
-    if(imageCoordsIndex<imageCoordsSize){
-        imageCoordsIndex+=animationSpeed*trueGameInstance->getDt();
+    if(frameTimeIndex<frameTimeMax){
+        frameTimeIndex+=animationSpeed*trueGameInstance->getDt();
+    }
+
+    if(frameTimeIndex>=frameTimeMax){
+        imageCoordsIndex+=1;
+        frameTimeIndex=0;
     }
     
     if(imageCoordsIndex>=imageCoordsSize){

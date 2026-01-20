@@ -18,7 +18,7 @@ class GameObject{
             idsList(idsList),
             scriptsIds(scriptsIds),
             scriptsList(),
-            isJustCreated(false),
+            isJustCreated(true),
             mother(nullptr),
             gameInstance(nullptr),
             arrayId(0),

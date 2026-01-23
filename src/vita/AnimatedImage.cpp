@@ -58,10 +58,10 @@ void AnimatedImage::step(){
     height=imageHeight;
     if(cameras.size()>0){
         for(auto* i:cameras){
-            i->pushCameraGraphicOrder(imgId,xTemp*scaleX,yTemp*scaleY,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,trueGameInstance);
+            i->pushCameraGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,trueGameInstance);
         }
     }else{
-        trueGameInstance->addGraphicOrder(imgId,xTemp*scaleX,yTemp*scaleY,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY);
+        trueGameInstance->addGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY);
     }
     if(frameTimeIndex<frameTimeMax){
         frameTimeIndex+=animationSpeed*trueGameInstance->getDt();
@@ -133,4 +133,14 @@ float ItemHandler::getHeight(){
         }
     }
     return height;
+}
+
+float AnimatedImage::getWorldX(){
+    ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
+    return x+motherConverted->getX();
+}
+
+float AnimatedImage::getWorldY(){
+    ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
+    return y+motherConverted->getY();
 }

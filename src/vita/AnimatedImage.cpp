@@ -103,15 +103,22 @@ void AnimatedImage::setScaleY(float scaleY){
 
 float ItemHandler::getWidth(){
     float width=0;
+    bool first=true;
     for(auto& item:elements){
         auto* itemRawPtr=item.get();
-        if(dynamic_cast<ItemHandler*>(itemRawPtr)){
-            width=static_cast<ItemHandler*>(itemRawPtr)->getWidth();
-        }else if(dynamic_cast<AnimatedImage*>(itemRawPtr)){
-            AnimatedImage* animatedImageItemConverted=static_cast<AnimatedImage*>(itemRawPtr);
-            float potentialGreaterCoordinate=animatedImageItemConverted->getX()+animatedImageItemConverted->getWidth();
-            if(potentialGreaterCoordinate>width){
-                width=potentialGreaterCoordinate;
+        ItemHandler* potentialItemHandler=dynamic_cast<ItemHandler*>(itemRawPtr);
+        AnimatedImage* potentialAnimatedImage=dynamic_cast<AnimatedImage*>(itemRawPtr);
+        if(potentialItemHandler){
+            float itemHandlerWidth=potentialItemHandler->getWidth();
+            if(itemHandlerWidth>width || first){
+                width=itemHandlerWidth;
+                first=false;
+            }
+        }else if(potentialAnimatedImage){
+            float itemHighestPosition=potentialAnimatedImage->getX()+((*potentialAnimatedImage->getImageCoords())[potentialAnimatedImage->getImageCoordsIndex()].width*potentialAnimatedImage->getScaleX());
+            if(itemHighestPosition>width || first){
+                width=itemHighestPosition;
+                first=false;
             }
         }
     }
@@ -120,15 +127,22 @@ float ItemHandler::getWidth(){
 
 float ItemHandler::getHeight(){
     float height=0;
+    bool first=true;
     for(auto& item:elements){
         auto* itemRawPtr=item.get();
-        if(dynamic_cast<ItemHandler*>(itemRawPtr)){
-            height=static_cast<ItemHandler*>(itemRawPtr)->getHeight();
-        }else if(dynamic_cast<AnimatedImage*>(itemRawPtr)){
-            AnimatedImage* animatedImageItemConverted=static_cast<AnimatedImage*>(itemRawPtr);
-            float potentialGreaterCoordinate=animatedImageItemConverted->getY()+animatedImageItemConverted->getHeight();
-            if(potentialGreaterCoordinate>height){
-                height=potentialGreaterCoordinate;
+        ItemHandler* potentialItemHandler=dynamic_cast<ItemHandler*>(itemRawPtr);
+        AnimatedImage* potentialAnimatedImage=dynamic_cast<AnimatedImage*>(itemRawPtr);
+        if(potentialItemHandler){
+            float itemHandlerHeight=potentialItemHandler->getHeight();
+            if(itemHandlerHeight>height || first){
+                height=itemHandlerHeight;
+                first=false;
+            }
+        }else if(potentialAnimatedImage){
+            float itemHighestPosition=potentialAnimatedImage->getY()+((*potentialAnimatedImage->getImageCoords())[potentialAnimatedImage->getImageCoordsIndex()].height*potentialAnimatedImage->getScaleY());
+            if(itemHighestPosition>height || first){
+                height=itemHighestPosition;
+                first=false;
             }
         }
     }
@@ -137,10 +151,10 @@ float ItemHandler::getHeight(){
 
 float AnimatedImage::getWorldX(){
     ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
-    return x+motherConverted->getX();
+    return (x+motherConverted->getX())*scaleX;
 }
 
 float AnimatedImage::getWorldY(){
     ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
-    return y+motherConverted->getY();
+    return (y+motherConverted->getY())*scaleY;
 }

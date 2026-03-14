@@ -28,21 +28,23 @@ void Collider::setHeight(float height){
 
 collideSides Collider::checkCollision(Collider* collider){
     collideSides sides={false,false,false,false,false};
-    if(detectInbound(x-50,y-50,width+50,height+50,collider->x-50,collider->y-50,collider->width+50,collider->height+50)){
+    if(detectInbound(x,y,width,height,collider->x,collider->y,collider->width,collider->height)){
         float xCollisionZoneLength=std::min(x+width,collider->x+collider->width)-std::max(x,collider->x);
         float yCollisionZoneLength=std::min(y+height,collider->y+collider->height)-std::max(y,collider->y);
         if(yCollisionZoneLength>xCollisionZoneLength){
-            if(x+width>=collider->x&&x+width<collider->x+(collider->width/2)){
+            float xDistance=(this->x+this->width/2)-(collider->getX()+collider->getWidth()/2);
+            if(xDistance<0){
                 sides.left=true;
             }
-            if(x<=collider->x+collider->width&&x>collider->x+(collider->width/2)){
+            else{
                 sides.right=true;
             }
         }else{
-            if(y+height>=collider->y&&y+height<collider->y+(collider->height/2)){
+            float yDistance=(this->y+this->height/2)-(collider->getY()+collider->getHeight()/2);
+            if(yDistance<0){
                 sides.up=true;
             }
-            if(y<=collider->y+collider->height&&y>collider->y+(collider->height/2)){
+            else{
                 sides.down=true;
             }
         }

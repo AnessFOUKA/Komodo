@@ -64,6 +64,7 @@ std::vector<GameObject*> ItemHandler::getElementById(std::string id){
     for(auto& i : elements){
         std::vector<std::string> list=*(i->getIdsList());
         if(std::find(list.begin(),list.end(),id)!=list.end()){
+            std::string a="a";
             gameObjectsList.push_back(i.get());
         }
     }

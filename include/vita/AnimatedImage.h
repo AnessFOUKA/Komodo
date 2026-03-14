@@ -21,8 +21,9 @@ class AnimatedImage : public GameObject{
         float height;
         float scaleX;
         float scaleY;
+        float alpha;
     public:
-        AnimatedImage(std::string imgId,float x,float y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
+        AnimatedImage(std::string imgId,float x,float y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,float alpha,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
             imgId(imgId),
             x(x),
             y(y),
@@ -33,6 +34,7 @@ class AnimatedImage : public GameObject{
             height(imageCoords[imageCoordsIndex].height),
             scaleX(scaleX),
             scaleY(scaleY),
+            alpha(alpha),
             GameObject(idsList,scriptsIds)
         {}
         std::string getImgId();
@@ -47,6 +49,9 @@ class AnimatedImage : public GameObject{
         float getHeight();
         float getScaleX();
         float getScaleY();
+        float getAlpha();
+
+        void setAlpha(float alpha);
 
         void setScaleX(float scaleX);
         void setScaleY(float scaleY);

@@ -58,8 +58,8 @@ std::unordered_map<std::string,std::vector<GraphicOrder>>* Game::getGraphicPipel
     return &graphicPipeline;
 }
 
-void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY){
-    GraphicOrder graphicOrder={x,y,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY};
+void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY,float alpha){
+    GraphicOrder graphicOrder={x,y,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha};
     if(graphicPipeline.find(imgId)!=graphicPipeline.end()){
         graphicPipeline[imgId].push_back(graphicOrder);
     }else{
@@ -71,11 +71,11 @@ void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float 
 void Game::readGraphicPipeline(){
     for(auto& [imgId, pipeGraphicOrders] : graphicPipeline){
         for(auto& order : pipeGraphicOrders){
-            vita2d_draw_texture_part_scale(mainMemoryManager.getImg(imgId),order.x,order.y,order.imageX,order.imageY,order.imageWidth,order.imageHeight,order.scaleX,order.scaleY);
+            vita2d_draw_texture_tint_part_scale(mainMemoryManager.getImg(imgId),order.x,order.y,order.imageX,order.imageY,order.imageWidth,order.imageHeight,order.scaleX,order.scaleY,RGBA8(255,255,255,static_cast<int>(order.alpha*255)));
         }
     }
     graphicPipeline.clear();
-    imgIds.clear(); // si imgIds n'est utilisé que pour stocker les clés
+    imgIds.clear();
 }
 
 
@@ -92,7 +92,7 @@ void Script::loadScript(){
     }
 };
 
-void Camera::pushCameraGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY,Game* gameInstance){
+void Camera::pushCameraGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY,float alpha,Game* gameInstance){
     for(auto renderer : renderers){
         float rendererX=renderer[0];
         float rendererY=renderer[1];
@@ -132,7 +132,7 @@ void Camera::pushCameraGraphicOrder(std::string imgId,float x,float y,float imag
                 imageHeightTemp-=(overflow/scaleY);
             }
 
-            gameInstance->addGraphicOrder(imgId,worldX,worldY,imageXTemp,imageYTemp,imageWidthTemp,imageHeightTemp,scaleX,scaleY);
+            gameInstance->addGraphicOrder(imgId,worldX,worldY,imageXTemp,imageYTemp,imageWidthTemp,imageHeightTemp,scaleX,scaleY,alpha);
         }
     }
 }

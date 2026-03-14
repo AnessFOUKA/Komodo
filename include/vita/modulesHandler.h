@@ -12,6 +12,8 @@
 #include <chrono>
 #include <memory>
 #include <cmath>
+#include <unordered_map>
+#include <algorithm>
 class GameObject;
 class Camera;
 class Game;

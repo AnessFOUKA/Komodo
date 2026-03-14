@@ -7,8 +7,8 @@
 int main(){
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution randX(0,800);
-    std::uniform_int_distribution randY(0,400);
+    std::uniform_int_distribution<int> randX(0,800);
+    std::uniform_int_distribution<int> randY(0,400);
     Game g1({},{},{
         {"up",SCE_CTRL_UP},
         {"down",SCE_CTRL_DOWN},

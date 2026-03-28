@@ -1,5 +1,25 @@
 #include "AnimatedImage.h"
 
+AnimatedImage::AnimatedImage(std::string imgId,float x,float y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,float alpha,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
+    imgId(imgId),
+    x(x),
+    y(y),
+    imageCoords(imageCoords),
+    imageCoordsIndex(imageCoordsIndex),
+    animationSpeed(animationSpeed),
+    scaleX(scaleX),
+    scaleY(scaleY),
+    alpha(alpha),
+    width(0),
+    height(0),
+    GameObject(idsList,scriptsIds)
+{
+    if(imageCoordsIndex>=0&&imageCoordsIndex<imageCoords.size()){
+        width=imageCoords[imageCoordsIndex].width;
+        height=imageCoords[imageCoordsIndex].height;
+    }
+}
+
 std::string AnimatedImage::getImgId(){
     return imgId;
 }
@@ -39,41 +59,46 @@ void AnimatedImage::setAnimationSpeed(float animationSpeed){
 }
 
 void AnimatedImage::step(){
-    for(auto& i:scriptsList){
-        i.loadScript();
+    GameObject::step();
+    if(mother==nullptr){
+        return;
     }
     ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
     float xTemp=x+motherConverted->getX();
     float yTemp=y+motherConverted->getY();
-    ImageCoord& imageCoord=imageCoords[(int)imageCoordsIndex];
-    float& imageX=imageCoord.x;
-    float& imageY=imageCoord.y;
-    float& imageWidth=imageCoord.width;
-    float& imageHeight=imageCoord.height;
-    float& frameTimeMax=imageCoord.frameTimeMax;
-    float& frameTimeIndex=imageCoord.frameTimeIndex;
-    int imageCoordsSize=imageCoords.size();
-    Game* trueGameInstance=static_cast<Game*>(gameInstance);
-    width=imageWidth;
-    height=imageHeight;
-    if(cameras.size()>0){
-        for(auto* i:cameras){
-            i->pushCameraGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha,trueGameInstance);
+    if(imageCoordsIndex>=0&& imageCoordsIndex<imageCoords.size()){
+        ImageCoord& imageCoord=imageCoords[(int)imageCoordsIndex];
+        float& imageX=imageCoord.x;
+        float& imageY=imageCoord.y;
+        float& imageWidth=imageCoord.width;
+        float& imageHeight=imageCoord.height;
+        float& frameTimeMax=imageCoord.frameTimeMax;
+        float& frameTimeIndex=imageCoord.frameTimeIndex;
+        int imageCoordsSize=imageCoords.size();
+        Game* trueGameInstance=static_cast<Game*>(gameInstance);
+        width=imageWidth;
+        height=imageHeight;
+        if(cameras.size()>0){
+            for(auto* i:cameras){
+                i->pushCameraGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha,trueGameInstance);
+            }
+        }else{
+            trueGameInstance->addGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha);
+        }
+        if(frameTimeIndex<frameTimeMax){
+            frameTimeIndex+=animationSpeed*trueGameInstance->getDt();
+        }
+
+        if(frameTimeIndex>=frameTimeMax){
+            imageCoordsIndex+=1;
+            frameTimeIndex=0;
+        }
+        
+        if(imageCoordsIndex>=imageCoordsSize){
+            imageCoordsIndex=0;
         }
     }else{
-        trueGameInstance->addGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha);
-    }
-    if(frameTimeIndex<frameTimeMax){
-        frameTimeIndex+=animationSpeed*trueGameInstance->getDt();
-    }
-
-    if(frameTimeIndex>=frameTimeMax){
-        imageCoordsIndex+=1;
-        frameTimeIndex=0;
-    }
-    
-    if(imageCoordsIndex>=imageCoordsSize){
-        imageCoordsIndex=0;
+        gameInstance->getMainErrorHandler()->sendError(4,"imageCoordsIndex out of imageCoords bounds",true,false);
     }
 }
 
@@ -123,10 +148,12 @@ float ItemHandler::getWidth(){
                 first=false;
             }
         }else if(potentialAnimatedImage){
-            float itemHighestPosition=potentialAnimatedImage->getX()+((*potentialAnimatedImage->getImageCoords())[potentialAnimatedImage->getImageCoordsIndex()].width*potentialAnimatedImage->getScaleX());
-            if(itemHighestPosition>width || first){
-                width=itemHighestPosition;
-                first=false;
+            if(potentialAnimatedImage->getImageCoordsIndex()>=0 && potentialAnimatedImage->getImageCoordsIndex()<potentialAnimatedImage->getImageCoords()->size()){
+                float itemHighestPosition=potentialAnimatedImage->getX()+((*potentialAnimatedImage->getImageCoords())[potentialAnimatedImage->getImageCoordsIndex()].width*potentialAnimatedImage->getScaleX());
+                if(itemHighestPosition>width || first){
+                    width=itemHighestPosition;
+                    first=false;
+                }
             }
         }
     }
@@ -147,10 +174,12 @@ float ItemHandler::getHeight(){
                 first=false;
             }
         }else if(potentialAnimatedImage){
-            float itemHighestPosition=potentialAnimatedImage->getY()+((*potentialAnimatedImage->getImageCoords())[potentialAnimatedImage->getImageCoordsIndex()].height*potentialAnimatedImage->getScaleY());
-            if(itemHighestPosition>height || first){
-                height=itemHighestPosition;
-                first=false;
+            if(potentialAnimatedImage->getImageCoordsIndex()>=0 && potentialAnimatedImage->getImageCoordsIndex()<potentialAnimatedImage->getImageCoords()->size()){
+                float itemHighestPosition=potentialAnimatedImage->getY()+((*potentialAnimatedImage->getImageCoords())[potentialAnimatedImage->getImageCoordsIndex()].height*potentialAnimatedImage->getScaleY());
+                if(itemHighestPosition>height || first){
+                    height=itemHighestPosition;
+                    first=false;
+                }
             }
         }
     }

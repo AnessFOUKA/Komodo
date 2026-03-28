@@ -12,5 +12,7 @@ class InputManager{
         void fetchInputs();
         bool checkPressed(std::string keyId);
         bool checkClicked(std::string keyId);
+        void addKey(std::string keyId,uint32_t sceCtrlButton);
+        bool checkKeyExists(std::string keyId);
 };
 #endif

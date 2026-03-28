@@ -8,6 +8,10 @@ vita2d_pvf* Game::getPvf(){
     return pvf;
 }
 
+ErrorHandler* Game::getMainErrorHandler(){
+    return &mainErrorHandler;
+}
+
 void Game::gameLoop(){
     vita2d_init();
     pvf=vita2d_load_default_pvf();
@@ -16,8 +20,11 @@ void Game::gameLoop(){
         mainInputManager.fetchInputs();
         vita2d_start_drawing();
         vita2d_clear_screen();
-        step();
-        readGraphicPipeline();
+        if(!mainErrorHandler.getShowErrorScreen()){
+            step();
+            readGraphicPipeline();
+        }
+        mainErrorHandler.manageErrors();
         vita2d_end_drawing();
         sceDisplayWaitVblankStart();
         vita2d_swap_buffers();
@@ -32,7 +39,7 @@ void Game::gameLoop(){
     sceKernelExitProcess(0);
 }
 
-void Game::addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandler){
+bool Game::addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandler){
     newObject->setGameInstance(this);
     newObject->setMother(itemHandler);
     newObject->setArrayId(itemHandler->getElements()->size());
@@ -41,12 +48,20 @@ void Game::addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandle
     itemHandlerCameras.insert(itemHandlerCameras.end(),newObjectCameras.begin(),newObjectCameras.end());
     newObject->setCameras(itemHandlerCameras);
     for(std::string i : *(newObject->getScriptsIds())){
-        newObject->addScript(i,&mainMemoryManager);
+        if(!newObject->addScript(i,&mainMemoryManager)){
+            return false;
+        }
     }
     itemHandler->getAddPipeline()->push_back(std::move(newObject));
+    return true;
 }
-void Game::removeItem(int index,ItemHandler* itemHandler){
+bool Game::removeItem(int index,ItemHandler* itemHandler){
+    if(!(index>=0&&index<itemHandler->getElements()->size())){
+        this->mainErrorHandler.sendError(5,"index out of itemHandler index plage",true,false);
+        return false;
+    }
     itemHandler->getRemPipeline()->push_back(index);
+    return true;
     //NETTOYER LA DONNÉE EN INDEX S'IL S'AGIT D'UN ITEMHANDLER
 }
 
@@ -64,18 +79,19 @@ void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float 
         graphicPipeline[imgId].push_back(graphicOrder);
     }else{
         graphicPipeline[imgId]={graphicOrder};
-        imgIds.push_back(imgId);
     }
 }
 
 void Game::readGraphicPipeline(){
     for(auto& [imgId, pipeGraphicOrders] : graphicPipeline){
         for(auto& order : pipeGraphicOrders){
-            vita2d_draw_texture_tint_part_scale(mainMemoryManager.getImg(imgId),order.x,order.y,order.imageX,order.imageY,order.imageWidth,order.imageHeight,order.scaleX,order.scaleY,RGBA8(255,255,255,static_cast<int>(order.alpha*255)));
+            vita2d_texture* tex=mainMemoryManager.getImg(imgId);
+            if(tex!=nullptr){
+                vita2d_draw_texture_tint_part_scale(tex,order.x,order.y,order.imageX,order.imageY,order.imageWidth,order.imageHeight,order.scaleX,order.scaleY,RGBA8(255,255,255,static_cast<int>(order.alpha*255)));
+            }
         }
     }
     graphicPipeline.clear();
-    imgIds.clear();
 }
 
 
@@ -135,4 +151,14 @@ void Camera::pushCameraGraphicOrder(std::string imgId,float x,float y,float imag
             gameInstance->addGraphicOrder(imgId,worldX,worldY,imageXTemp,imageYTemp,imageWidthTemp,imageHeightTemp,scaleX,scaleY,alpha);
         }
     }
+}
+
+bool Script::checkCondition(float conditionIndex){
+    if(conditionMap.find((int)conditionIndex)==conditionMap.end()){
+        mother->getGameInstance()->getMainErrorHandler()->sendError(3,"condition hasn't been added to condition table",true,false);
+        return false;
+    }
+    bool conditionState=conditionMap[(int)conditionIndex];
+    conditionMap[(int)conditionIndex]=false;
+    return conditionState;
 }

@@ -45,10 +45,15 @@ void GameObject::setGameInstance(Game* gameInstance){
     this->gameInstance=gameInstance;
 }
 
-void GameObject::addScript(std::string scriptId,MemoryManager* memoryManager){
-    Script newScript=*(memoryManager->getScript(scriptId));
+bool GameObject::addScript(std::string scriptId,MemoryManager* memoryManager){
+    Script* scriptPointer=memoryManager->getScript(scriptId);
+    if(scriptPointer==nullptr){
+        return false;
+    }
+    Script newScript=*(scriptPointer);
     newScript.setMother(this);
     this->scriptsList.push_back(newScript);
+    return true;
 }
 
 std::vector<Camera*>* GameObject::getCameras(){

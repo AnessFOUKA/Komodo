@@ -10,9 +10,7 @@ void ItemHandler::step(){
         y+=motherConverted->getY();
     }
     readPipelines();
-    for(auto& i:scriptsList){
-        i.loadScript();
-    }
+    GameObject::step();
     /*for(GameObject* i : elements){
         if(i->getIsJustCreated()){
             i->create();
@@ -43,10 +41,6 @@ std::vector<int>* ItemHandler::getRemPipeline(){
     return &remPipeline;
 }
 
-void ItemHandler::itemRemover(int itemId){
-    elements.erase(elements.begin()+itemId);
-}
-
 void ItemHandler::readPipelines(){
     while(addPipeline.size()>0){
         elements.push_back(std::move(addPipeline[0]));
@@ -54,7 +48,7 @@ void ItemHandler::readPipelines(){
     }
     std::sort(remPipeline.begin(),remPipeline.end());
     for(int i=remPipeline.size()-1;i>=0;i--){
-        itemRemover(remPipeline[i]);
+        elements.erase(elements.begin()+remPipeline[i]);
     }
     remPipeline={};
 }
@@ -64,7 +58,6 @@ std::vector<GameObject*> ItemHandler::getElementById(std::string id){
     for(auto& i : elements){
         std::vector<std::string> list=*(i->getIdsList());
         if(std::find(list.begin(),list.end(),id)!=list.end()){
-            std::string a="a";
             gameObjectsList.push_back(i.get());
         }
     }

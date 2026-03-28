@@ -59,10 +59,3 @@ void Script::setConditionMap(std::map<int,bool> conditionMap){
 void Script::createCondition(int conditionIndex){
     conditionMap[conditionIndex]=true;
 }
-
-bool Script::checkCondition(float conditionIndex){
-    if(conditionMap.find((int)conditionIndex)==conditionMap.end())return false;
-    bool conditionState=conditionMap[(int)conditionIndex];
-    conditionMap[(int)conditionIndex]=false;
-    return conditionState;
-}

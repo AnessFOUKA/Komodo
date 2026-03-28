@@ -27,3 +27,12 @@ bool InputManager::checkClicked(std::string keyId){
 void InputManager::fetchInputs(){
     sceCtrlReadBufferPositive(0,&pad,1);
 }
+
+void InputManager::addKey(std::string keyId,uint32_t sceCtrlButton){
+    keys[keyId]=sceCtrlButton;
+    keysStates[keyId]=true;
+}
+
+bool InputManager::checkKeyExists(std::string keyId){
+    return (keys.find(keyId)!=keys.end())&&(keysStates.find(keyId)!=keysStates.end());
+}

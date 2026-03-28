@@ -1,0 +1,10 @@
+fonctions sensibles aux erreurs:
+    -AnimatedImage::step;
+    -AnimatedImage::getWorldX;
+    -AnimatedImage::getWorldY;
+    -Collider::checkCollision;
+    -handleFolder;
+    -saveLog;
+    -ErrorHandler::manageErrors;
+    -Game::addItem
+    -Game::removeItem

@@ -6,11 +6,13 @@ class MemoryManager{
         std::map<std::string,vita2d_texture*> imgMem;
         std::map<std::string,std::unique_ptr<Script>> scriptsMem;
         std::vector<std::function<void()>> pipeline;
+        ErrorHandler* errorHandler;
     public:
-        MemoryManager():
+        MemoryManager(ErrorHandler* errorHandler):
             imgMem(),
             scriptsMem(),
-            pipeline()
+            pipeline(),
+            errorHandler(errorHandler)
         {}
         Script* getScript(std::string scriptId);
         vita2d_texture* getImg(std::string filename);

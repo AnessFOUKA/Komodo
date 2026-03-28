@@ -23,20 +23,7 @@ class AnimatedImage : public GameObject{
         float scaleY;
         float alpha;
     public:
-        AnimatedImage(std::string imgId,float x,float y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,float alpha,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
-            imgId(imgId),
-            x(x),
-            y(y),
-            imageCoords(imageCoords),
-            imageCoordsIndex(imageCoordsIndex),
-            animationSpeed(animationSpeed),
-            width(imageCoords[imageCoordsIndex].width),
-            height(imageCoords[imageCoordsIndex].height),
-            scaleX(scaleX),
-            scaleY(scaleY),
-            alpha(alpha),
-            GameObject(idsList,scriptsIds)
-        {}
+        AnimatedImage(std::string imgId,float x,float y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,float alpha,std::vector<std::string> idsList,std::vector<std::string> scriptsIds);
         std::string getImgId();
         float getX();
         float getY();

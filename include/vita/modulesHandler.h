@@ -14,6 +14,9 @@
 #include <cmath>
 #include <unordered_map>
 #include <algorithm>
+#include <psp2/io/fcntl.h>
+#include <psp2/io/stat.h>
+#include <optional>
 class GameObject;
 class Camera;
 class Game;

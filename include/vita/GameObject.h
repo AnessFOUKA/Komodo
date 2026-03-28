@@ -35,7 +35,7 @@ class GameObject{
         virtual void setMother(ItemHandler* mother);
         virtual Game* getGameInstance();
         virtual void setGameInstance(Game* gameInstance);
-        virtual void addScript(std::string scriptId,MemoryManager* memoryManager);
+        virtual bool addScript(std::string scriptId,MemoryManager* memoryManager);
         virtual void create();
         virtual void step();
 

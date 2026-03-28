@@ -1,6 +1,6 @@
 #ifndef SCRIPT_H
 #define SCRIPT_H
-#include "InputManager.h"
+#include "ErrorHandler.h"
 class Script{
     protected:
         std::function<void(Script*)> scriptFunction;

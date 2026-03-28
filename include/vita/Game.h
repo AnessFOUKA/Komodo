@@ -13,13 +13,14 @@ struct GraphicOrder{
     float scaleX;
     float scaleY;
     float alpha;
+    int layer;
 };
 
 class Game : public ItemHandler{
     protected:
         MemoryManager mainMemoryManager;
         InputManager mainInputManager;
-        std::unordered_map<std::string,std::vector<GraphicOrder>> graphicPipeline;
+        std::map<int,std::unordered_map<std::string,std::vector<GraphicOrder>>> graphicPipeline;
         std::vector<std::string> imgIds;
         high_resolution_clock::time_point previousTime;
         float dt;
@@ -41,8 +42,8 @@ class Game : public ItemHandler{
         MemoryManager* getMemoryManager();
         InputManager* getMainInputManager();
         ErrorHandler* getMainErrorHandler();
-        std::unordered_map<std::string,std::vector<GraphicOrder>>* getGraphicPipeline();
-        void addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY,float alpha);
+        std::map<int,std::unordered_map<std::string,std::vector<GraphicOrder>>>* getGraphicPipeline();
+        void addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY,float alpha,int layer);
         void readGraphicPipeline();
         void gameLoop();
         bool addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandler);

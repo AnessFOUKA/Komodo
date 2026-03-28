@@ -69,21 +69,37 @@ InputManager* Game::getMainInputManager(){
     return &mainInputManager;
 }
 
-std::unordered_map<std::string,std::vector<GraphicOrder>>* Game::getGraphicPipeline(){
+std::map<int,std::unordered_map<std::string,std::vector<GraphicOrder>>>* Game::getGraphicPipeline(){
     return &graphicPipeline;
 }
 
-void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY,float alpha){
-    GraphicOrder graphicOrder={x,y,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha};
-    if(graphicPipeline.find(imgId)!=graphicPipeline.end()){
-        graphicPipeline[imgId].push_back(graphicOrder);
-    }else{
-        graphicPipeline[imgId]={graphicOrder};
+void Game::addGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY,float alpha,int layer){
+    GraphicOrder graphicOrder={x,y,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha,layer};
+    if(graphicPipeline.find(layer)==graphicPipeline.end()){
+        //graphicPipeline[imgId].push_back(graphicOrder);
+        graphicPipeline[layer]={};
     }
+    if(graphicPipeline[layer].find(imgId)==graphicPipeline[layer].end()){
+        graphicPipeline[layer][imgId]={};
+    }
+    graphicPipeline[layer][imgId].push_back(graphicOrder);
+
+        //graphicPipeline[imgId]={graphicOrder};
 }
 
 void Game::readGraphicPipeline(){
-    for(auto& [imgId, pipeGraphicOrders] : graphicPipeline){
+    for(auto& [layer,layerPipeline] : graphicPipeline){
+        for(auto& [imgId,pipeGraphicOrders]: layerPipeline){
+            for(auto& order : pipeGraphicOrders){
+                vita2d_texture* tex=mainMemoryManager.getImg(imgId);
+                if(tex!=nullptr){
+                    vita2d_draw_texture_tint_part_scale(tex,order.x,order.y,order.imageX,order.imageY,order.imageWidth,order.imageHeight,order.scaleX,order.scaleY,RGBA8(255,255,255,static_cast<int>(order.alpha*255)));
+                }
+            }
+        }
+    }
+    graphicPipeline.clear();
+    /*for(auto& [imgId, pipeGraphicOrders] : graphicPipeline){
         for(auto& order : pipeGraphicOrders){
             vita2d_texture* tex=mainMemoryManager.getImg(imgId);
             if(tex!=nullptr){
@@ -91,7 +107,7 @@ void Game::readGraphicPipeline(){
             }
         }
     }
-    graphicPipeline.clear();
+    graphicPipeline.clear();*/
 }
 
 
@@ -108,7 +124,7 @@ void Script::loadScript(){
     }
 };
 
-void Camera::pushCameraGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY,float alpha,Game* gameInstance){
+void Camera::pushCameraGraphicOrder(std::string imgId,float x,float y,float imageX,float imageY,float imageWidth,float imageHeight,float scaleX,float scaleY,float alpha,int layer,Game* gameInstance){
     for(auto renderer : renderers){
         float rendererX=renderer[0];
         float rendererY=renderer[1];
@@ -148,7 +164,7 @@ void Camera::pushCameraGraphicOrder(std::string imgId,float x,float y,float imag
                 imageHeightTemp-=(overflow/scaleY);
             }
 
-            gameInstance->addGraphicOrder(imgId,worldX,worldY,imageXTemp,imageYTemp,imageWidthTemp,imageHeightTemp,scaleX,scaleY,alpha);
+            gameInstance->addGraphicOrder(imgId,worldX,worldY,imageXTemp,imageYTemp,imageWidthTemp,imageHeightTemp,scaleX,scaleY,alpha,layer);
         }
     }
 }

@@ -6,7 +6,7 @@ class Apple : public AnimatedImage{
         Collider collider;
     public:
         Apple(std::string imgId,int x,int y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
-            AnimatedImage(imgId,x,y,imageCoords,imageCoordsIndex,animationSpeed,scaleX,scaleY,1,idsList,scriptsIds),
+            AnimatedImage(imgId,x,y,imageCoords,imageCoordsIndex,animationSpeed,scaleX,scaleY,1,1,idsList,scriptsIds),
             collider(x,y,width,height)
         {}
         Collider* getCollider();

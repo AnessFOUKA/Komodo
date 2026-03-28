@@ -1,6 +1,6 @@
 #include "AnimatedImage.h"
 
-AnimatedImage::AnimatedImage(std::string imgId,float x,float y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,float alpha,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
+AnimatedImage::AnimatedImage(std::string imgId,float x,float y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,float alpha,int layer,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
     imgId(imgId),
     x(x),
     y(y),
@@ -12,6 +12,7 @@ AnimatedImage::AnimatedImage(std::string imgId,float x,float y,std::vector<Image
     alpha(alpha),
     width(0),
     height(0),
+    layer(layer),
     GameObject(idsList,scriptsIds)
 {
     if(imageCoordsIndex>=0&&imageCoordsIndex<imageCoords.size()){
@@ -80,10 +81,10 @@ void AnimatedImage::step(){
         height=imageHeight;
         if(cameras.size()>0){
             for(auto* i:cameras){
-                i->pushCameraGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha,trueGameInstance);
+                i->pushCameraGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha,layer,trueGameInstance);
             }
         }else{
-            trueGameInstance->addGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha);
+            trueGameInstance->addGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha,layer);
         }
         if(frameTimeIndex<frameTimeMax){
             frameTimeIndex+=animationSpeed*trueGameInstance->getDt();

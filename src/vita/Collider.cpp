@@ -34,18 +34,18 @@ collideSides Collider::checkCollision(Collider* collider){
         if(yCollisionZoneLength>xCollisionZoneLength){
             float xDistance=(this->x+this->width/2)-(collider->getX()+collider->getWidth()/2);
             if(xDistance<0){
-                sides.left=true;
+                sides.right=true;
             }
             else{
-                sides.right=true;
+                sides.left=true;
             }
         }else{
             float yDistance=(this->y+this->height/2)-(collider->getY()+collider->getHeight()/2);
             if(yDistance<0){
-                sides.up=true;
+                sides.down=true;
             }
             else{
-                sides.down=true;
+                sides.up=true;
             }
         }
         sides.collideTrue=(sides.up||sides.down||sides.left||sides.right);

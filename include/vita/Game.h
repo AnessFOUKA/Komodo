@@ -37,7 +37,10 @@ class Game : public ItemHandler{
             dt(0.0f),
             mainErrorHandler(&pvf,&mainInputManager),
             mainMemoryManager(&mainErrorHandler)
-        {}
+        {
+            mother=this;
+            gameInstance=this;
+        }
         vita2d_pvf* getPvf();
         MemoryManager* getMemoryManager();
         InputManager* getMainInputManager();

@@ -178,3 +178,95 @@ bool Script::checkCondition(float conditionIndex){
     conditionMap[(int)conditionIndex]=false;
     return conditionState;
 }
+
+getFileJSONReturn ItemHandler::getFileJSON(std::string filename){
+    getFileTextReturn fileText=getFileText(filename);
+    if(fileText.error.size()>0){
+        gameInstance->getMainErrorHandler()->sendError(6,fileText.error,true,false);
+        return {json::object(),true};
+    }
+    try{
+        json fileJson=json::parse(fileText.text);
+        return {fileJson,false};
+    }catch(json::parse_error& e){
+        gameInstance->getMainErrorHandler()->sendError(6,"json parse error :"+std::string(e.what()),true,false);
+        return {json::object(),true};
+    }catch(json::type_error& e){
+        gameInstance->getMainErrorHandler()->sendError(7,"json type error :"+std::string(e.what()),true,false);
+        return {json::object(),true};
+    }
+}
+//ajouter un return type capable de stocker des erreurs pour getFileJSON
+void ItemHandler::injectJson(
+    std::string filename,
+    std::map<std::string,std::function<std::unique_ptr<GameObject>(json*)>> callbackMap,
+    ItemHandler* itemHandler,
+    json* jsonToInject
+){
+    try{
+        itemHandler=(itemHandler!=nullptr?itemHandler:this);
+        json workJson=json::object();
+        if(jsonToInject!=nullptr){
+            workJson=*jsonToInject;
+        }else{
+            getFileJSONReturn parsedJsonFile=getFileJSON(filename);
+            if(!parsedJsonFile.error){
+                workJson=parsedJsonFile.success;
+            }
+        }
+        //json workJson=(jsonToInject!=nullptr?*jsonToInject:getFileJSON(filename));
+        if(workJson.is_object()){
+            for(auto it=workJson.begin();it!=workJson.end();it++){
+                if(callbackMap.find(it.key())!=callbackMap.end()){
+                    json objGroup=it.value();
+                    std::unique_ptr<GameObject> objToAdd=nullptr;
+                    if(objGroup.contains("coords")&&objGroup.at("coords").is_object()){
+                        for(auto coordGroup=objGroup.at("coords").begin();coordGroup!=objGroup.at("coords").end();coordGroup++){
+                            json xCoords=json::parse(coordGroup.key());
+                            json yCoords=coordGroup.value();
+                            //faire gaffe à ce qu'il s'agisse de nombres
+                            for(auto& xCoord : xCoords){
+                                for(auto& yCoord : yCoords){
+                                    if(xCoord.is_number()&&yCoord.is_number()){
+                                        json objToPass=objGroup;
+                                        objToPass["x"]=xCoord;
+                                        objToPass["y"]=yCoord;
+                                        objToAdd=callbackMap[it.key()](&objToPass);
+                                        ItemHandler* target=dynamic_cast<ItemHandler*>(objToAdd.get());
+                                        if(objToPass.contains("elements")&&target!=nullptr){
+                                            injectJson(filename,callbackMap,target,&objToPass["elements"]);
+                                        }else if(target!=nullptr){
+                                            gameInstance->getMainErrorHandler()->sendError(11,"'elements' hasn't been defined",true,false);
+                                        }
+                                        gameInstance->addItem(std::move(objToAdd),itemHandler);
+                                    }else{
+                                        gameInstance->getMainErrorHandler()->sendError(12,"coordinates must be numbers",true,false);
+                                    }
+                                }
+                            }
+                        }
+                    }else if(objGroup.contains("coords")){
+                        gameInstance->getMainErrorHandler()->sendError(10,"coords must be an object with arrays as keys and values(those as keys must be writted as stringified jsons)",true,false);
+                    }else{
+                        objToAdd=callbackMap[it.key()](&objGroup);
+                        ItemHandler* target=dynamic_cast<ItemHandler*>(objToAdd.get());
+                        if(objGroup.contains("elements")&&target!=nullptr){
+                            injectJson(filename,callbackMap,target,&objGroup["elements"]);
+                        }else if(target!=nullptr){
+                            gameInstance->getMainErrorHandler()->sendError(11,"'elements' hasn't been defined",true,false);
+                        }
+                        gameInstance->addItem(std::move(objToAdd),itemHandler);
+                    }
+                }else{
+                    gameInstance->getMainErrorHandler()->sendError(9,"itemId does not exist in callbackMap",true,false);
+                }
+            }
+        }else{
+            gameInstance->getMainErrorHandler()->sendError(8,"a map json must be an object with callbackMapIds as keys and object attributes as values",true,false);
+        }
+    }catch(json::parse_error& e){
+        gameInstance->getMainErrorHandler()->sendError(6,"json parse error :"+std::string(e.what()),true,false);
+    }catch(json::type_error& e){
+        gameInstance->getMainErrorHandler()->sendError(7,"json type error :"+std::string(e.what()),true,false);
+    }
+}

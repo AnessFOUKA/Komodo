@@ -17,8 +17,15 @@
 #include <psp2/io/fcntl.h>
 #include <psp2/io/stat.h>
 #include <optional>
+#include "json.hpp"
+using json=nlohmann::json;
 class GameObject;
 class Camera;
 class Game;
 bool detectInbound(float x1,float y1,float width1,float heigth1,float x2,float y2,float width2,float heigth2);
+struct getFileTextReturn{
+    std::string text;
+    std::string error;
+};
+getFileTextReturn getFileText(std::string filename);
 #endif

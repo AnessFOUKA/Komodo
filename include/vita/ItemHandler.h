@@ -2,6 +2,11 @@
 #define ITEMHANDLER_H
 #include "Camera.h"
 
+struct getFileJSONReturn{
+    json success;
+    bool error;
+};
+
 class ItemHandler : public GameObject{
     protected:
         std::vector<std::unique_ptr<GameObject>> elements;
@@ -9,7 +14,6 @@ class ItemHandler : public GameObject{
         std::vector<int> remPipeline;
         float x;
         float y;
-        void itemRemover(int itemId);
     public: 
         ItemHandler(float x,float y,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
             GameObject(idsList,scriptsIds),
@@ -29,5 +33,12 @@ class ItemHandler : public GameObject{
         void setY(float y);
         float getWidth();
         float getHeight();
+        getFileJSONReturn getFileJSON(std::string filename);
+        void injectJson(
+            std::string filename,
+            std::map<std::string,std::function<std::unique_ptr<GameObject>(json*)>> callbackMap,
+            ItemHandler* itemHandler,
+            json* jsonToInject
+        );
 };  
 #endif

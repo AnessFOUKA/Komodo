@@ -3,35 +3,7 @@ std::vector<std::unique_ptr<GameObject>>* ItemHandler::getElements(){
     return &elements;
 }
 
-void ItemHandler::step(){
-    ItemHandler* motherConverted=dynamic_cast<ItemHandler*>(mother);
-    if(motherConverted!=nullptr){
-        x+=motherConverted->getX();
-        y+=motherConverted->getY();
-    }
-    readPipelines();
-    GameObject::step();
-    /*for(GameObject* i : elements){
-        if(i->getIsJustCreated()){
-            i->create();
-            i->setIsJustCreated(false);
-        }
-        i->step();
-    }*/
-   for(int i=0;i<elements.size();i++){
-    GameObject* element=elements[i].get();
-    element->setArrayId(i);
-    if(element->getIsJustCreated()){
-        element->create();
-        element->setIsJustCreated(false);
-    }
-    element->step();
-   }
-   if(motherConverted!=nullptr){
-    x-=motherConverted->getX();
-    y-=motherConverted->getY();
-   }
-}
+//
 
 std::vector<std::unique_ptr<GameObject>>* ItemHandler::getAddPipeline(){
     return &addPipeline;
@@ -76,4 +48,62 @@ void ItemHandler::setX(float x){
 }
 void ItemHandler::setY(float y){
     this->y=y;
+}
+
+float ItemHandler::getGlobalX(){
+    return globalX;
+}
+float ItemHandler::getGlobalY(){
+    return globalY;
+}
+
+void ItemHandler::setScaleX(float scaleX){
+    this->scaleX=scaleX;
+}
+
+void ItemHandler::setScaleY(float scaleY){
+    this->scaleY=scaleY;
+}
+
+float ItemHandler::getScaleX(){
+    return scaleX;
+}
+
+float ItemHandler::getScaleY(){
+    return scaleY;
+}
+
+float ItemHandler::getGlobalScaleX(){
+    return globalScaleX;
+}
+
+float ItemHandler::getGlobalScaleY(){
+    return globalScaleY;
+}
+
+void ItemHandler::step(){
+    readPipelines();
+    ItemHandler* motherConverted=dynamic_cast<ItemHandler*>(mother);
+    globalX=x;
+    globalY=y;
+    globalScaleX=scaleX;
+    globalScaleY=scaleY;
+    if(motherConverted!=nullptr){
+        globalX*=motherConverted->getGlobalScaleY();
+        globalY*=motherConverted->getGlobalScaleY();
+        globalX+=motherConverted->getGlobalX();
+        globalY+=motherConverted->getGlobalY();
+        globalScaleX*=motherConverted->getGlobalScaleX();
+        globalScaleY*=motherConverted->getGlobalScaleY();
+    }
+   GameObject::step();
+   for(int i=0;i<elements.size();i++){
+    GameObject* element=elements[i].get();
+    element->setArrayId(i);
+    if(element->getIsJustCreated()){
+        element->create();
+        element->setIsJustCreated(false);
+    }
+    element->step();
+   }
 }

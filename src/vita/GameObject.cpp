@@ -15,6 +15,8 @@ void GameObject::create(){
 
 }
 
+void GameObject::init(){}
+
 void GameObject::step(){
     for(auto& i:scriptsList){
         i.loadScript();

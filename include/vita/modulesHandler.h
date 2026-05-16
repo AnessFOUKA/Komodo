@@ -28,4 +28,5 @@ struct getFileTextReturn{
     std::string error;
 };
 getFileTextReturn getFileText(std::string filename);
+void manageAnchorPoint(std::string anchorInfos, float& viewX, float& viewY, float width, float height, Game* gameInstance);
 #endif

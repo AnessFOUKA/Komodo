@@ -5,7 +5,7 @@ class Map : public ItemHandler{
     int score;
     public:
         Map(float x,float y,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
-            ItemHandler(x,y,idsList,scriptsIds),
+            ItemHandler(x,y,1,1,idsList,scriptsIds),
             score(0)
         {}
         int getScore();

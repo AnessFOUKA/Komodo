@@ -1,6 +1,20 @@
 #include "AnimatedImage.h"
 
-AnimatedImage::AnimatedImage(std::string imgId,float x,float y,std::vector<ImageCoord> imageCoords,float imageCoordsIndex,float animationSpeed,float scaleX,float scaleY,float alpha,int layer,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
+AnimatedImage::AnimatedImage(
+    std::string imgId,
+    float x,
+    float y,
+    std::vector<ImageCoord> imageCoords,
+    float imageCoordsIndex,
+    float animationSpeed,
+    float scaleX,
+    float scaleY,
+    float alpha,
+    int layer,
+    std::string anchorInfos,
+    std::vector<std::string> idsList,
+    std::vector<std::string> scriptsIds
+):
     imgId(imgId),
     x(x),
     y(y),
@@ -13,6 +27,11 @@ AnimatedImage::AnimatedImage(std::string imgId,float x,float y,std::vector<Image
     width(0),
     height(0),
     layer(layer),
+    anchorInfos(anchorInfos),
+    globalX(0),
+    globalY(0),
+    globalScaleX(scaleX),
+    globalScaleY(scaleY),
     GameObject(idsList,scriptsIds)
 {
     if(imageCoordsIndex>=0&&imageCoordsIndex<imageCoords.size()){
@@ -64,11 +83,14 @@ void AnimatedImage::step(){
     if(mother==nullptr){
         return;
     }
+    //faire une différence sémantique entre coordonnées globales et locales
     ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
-    float xTemp=x+motherConverted->getX();
-    float yTemp=y+motherConverted->getY();
+    globalScaleX=scaleX*motherConverted->getGlobalScaleX();
+    globalScaleY=scaleY*motherConverted->getGlobalScaleY();
+    globalX=(x*motherConverted->getGlobalScaleX()+motherConverted->getGlobalX());
+    globalY=(y*motherConverted->getGlobalScaleY()+motherConverted->getGlobalY());
     if(imageCoordsIndex>=0&& imageCoordsIndex<imageCoords.size()){
-        ImageCoord& imageCoord=imageCoords[(int)imageCoordsIndex];
+        ImageCoord& imageCoord=imageCoords[static_cast<int>(imageCoordsIndex)];
         float& imageX=imageCoord.x;
         float& imageY=imageCoord.y;
         float& imageWidth=imageCoord.width;
@@ -79,12 +101,13 @@ void AnimatedImage::step(){
         Game* trueGameInstance=static_cast<Game*>(gameInstance);
         width=imageWidth;
         height=imageHeight;
+        manageAnchorPoint(anchorInfos,globalX,globalY,getWidth(),getHeight(),gameInstance);
         if(cameras.size()>0){
             for(auto* i:cameras){
-                i->pushCameraGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha,layer,trueGameInstance);
+                i->pushCameraGraphicOrder(imgId,globalX,globalY,imageX,imageY,imageWidth,imageHeight,globalScaleX,globalScaleY,alpha,layer,trueGameInstance);
             }
         }else{
-            trueGameInstance->addGraphicOrder(imgId,xTemp,yTemp,imageX,imageY,imageWidth,imageHeight,scaleX,scaleY,alpha,layer);
+            trueGameInstance->addGraphicOrder(imgId,globalX,globalY,imageX,imageY,imageWidth,imageHeight,globalScaleX,globalScaleY,alpha,layer);
         }
         if(frameTimeIndex<frameTimeMax){
             frameTimeIndex+=animationSpeed*trueGameInstance->getDt();
@@ -101,14 +124,15 @@ void AnimatedImage::step(){
     }else{
         gameInstance->getMainErrorHandler()->sendError(4,"imageCoordsIndex out of imageCoords bounds",true,false);
     }
+    
 }
 
 float AnimatedImage::getWidth(){
-    return width*scaleX;
+    return width*globalScaleX;
 }
 
 float AnimatedImage::getHeight(){
-    return height*scaleY;
+    return height*globalScaleY;
 }
 
 float AnimatedImage::getScaleX(){
@@ -135,6 +159,14 @@ void AnimatedImage::setAlpha(float alpha){
     this->alpha=alpha;
 }
 
+std::string AnimatedImage::getAnchorInfos(){
+    return anchorInfos;
+}
+
+void AnimatedImage::setAnchorInfos(std::string anchorInfos){
+    this->anchorInfos=anchorInfos;
+}
+
 float ItemHandler::getWidth(){
     float width=0;
     bool first=true;
@@ -150,7 +182,7 @@ float ItemHandler::getWidth(){
             }
         }else if(potentialAnimatedImage){
             if(potentialAnimatedImage->getImageCoordsIndex()>=0 && potentialAnimatedImage->getImageCoordsIndex()<potentialAnimatedImage->getImageCoords()->size()){
-                float itemHighestPosition=potentialAnimatedImage->getX()+((*potentialAnimatedImage->getImageCoords())[potentialAnimatedImage->getImageCoordsIndex()].width*potentialAnimatedImage->getScaleX());
+                float itemHighestPosition=potentialAnimatedImage->getGlobalX()+((*potentialAnimatedImage->getImageCoords())[potentialAnimatedImage->getImageCoordsIndex()].width*potentialAnimatedImage->getGlobalScaleX());
                 if(itemHighestPosition>width || first){
                     width=itemHighestPosition;
                     first=false;
@@ -176,7 +208,7 @@ float ItemHandler::getHeight(){
             }
         }else if(potentialAnimatedImage){
             if(potentialAnimatedImage->getImageCoordsIndex()>=0 && potentialAnimatedImage->getImageCoordsIndex()<potentialAnimatedImage->getImageCoords()->size()){
-                float itemHighestPosition=potentialAnimatedImage->getY()+((*potentialAnimatedImage->getImageCoords())[potentialAnimatedImage->getImageCoordsIndex()].height*potentialAnimatedImage->getScaleY());
+                float itemHighestPosition=potentialAnimatedImage->getGlobalY()+((*potentialAnimatedImage->getImageCoords())[potentialAnimatedImage->getImageCoordsIndex()].height*potentialAnimatedImage->getGlobalScaleY());
                 if(itemHighestPosition>height || first){
                     height=itemHighestPosition;
                     first=false;
@@ -187,12 +219,26 @@ float ItemHandler::getHeight(){
     return height;
 }
 
-float AnimatedImage::getWorldX(){
-    ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
-    return (x+motherConverted->getX())*scaleX;
+float AnimatedImage::getGlobalX(){
+    return globalX;
 }
 
-float AnimatedImage::getWorldY(){
+float AnimatedImage::getGlobalY(){
+    return globalY;
+}
+
+float AnimatedImage::getGlobalScaleX(){
+    return globalScaleX;
+}
+
+float AnimatedImage::getGlobalScaleY(){
+    return globalScaleY;
+}
+
+void AnimatedImage::init(){
     ItemHandler* motherConverted=static_cast<ItemHandler*>(mother);
-    return (y+motherConverted->getY())*scaleY;
+    globalScaleX=scaleX*motherConverted->getGlobalScaleX();
+    globalScaleY=scaleY*motherConverted->getGlobalScaleY();
+    globalX=(x*motherConverted->getGlobalScaleX()+motherConverted->getGlobalX());
+    globalY=(y*motherConverted->getGlobalScaleY()+motherConverted->getGlobalY());
 }

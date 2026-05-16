@@ -14,11 +14,23 @@ class ItemHandler : public GameObject{
         std::vector<int> remPipeline;
         float x;
         float y;
+        float globalX;
+        float globalY;
+        float scaleX;
+        float scaleY;
+        float globalScaleX;
+        float globalScaleY;
     public: 
-        ItemHandler(float x,float y,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
+        ItemHandler(float x,float y,float scaleX,float scaleY,std::vector<std::string> idsList,std::vector<std::string> scriptsIds):
             GameObject(idsList,scriptsIds),
             x(x),
-            y(y)
+            y(y),
+            globalX(x),
+            globalY(y),
+            scaleX(scaleX),
+            scaleY(scaleY),
+            globalScaleX(scaleX),
+            globalScaleY(scaleY)
         {}
         std::vector<std::unique_ptr<GameObject>>* getElements();
 
@@ -40,5 +52,13 @@ class ItemHandler : public GameObject{
             ItemHandler* itemHandler,
             json* jsonToInject
         );
+        float getGlobalX();
+        float getGlobalY();
+        void setScaleX(float scaleX);
+        void setScaleY(float scaleY);
+        float getScaleX();
+        float getScaleY();
+        float getGlobalScaleX();
+        float getGlobalScaleY();
 };  
 #endif

@@ -9,7 +9,7 @@ int main(){
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> randX(0,800);
     std::uniform_int_distribution<int> randY(0,400);
-    Game g1({},{},{
+    Game g1({
         {"up",SCE_CTRL_UP},
         {"down",SCE_CTRL_DOWN},
         {"left",SCE_CTRL_LEFT},
@@ -97,7 +97,7 @@ int main(){
             Node* follower=static_cast<Node*>(i); 
             if(detectInbound(target->getX()+5,target->getY()+5,target->getWidth()-5,target->getHeight()-5,follower->getX()+5,follower->getY()+5,follower->getWidth()-5,follower->getHeight()-5)&&playerItemHandler->getScore()>0&&!target->getGameOver()){
                 g1.removeItem(0,&g1);
-                g1.addItem(std::make_unique<ItemHandler>(0,0,std::vector<std::string>{"gameOverScreen"},std::vector<std::string>{"gameOverScreenScript"}),&g1);
+                g1.addItem(std::make_unique<ItemHandler>(0,0,1,1,std::vector<std::string>{"gameOverScreen"},std::vector<std::string>{"gameOverScreenScript"}),&g1);
                 target->setGameOver(true);
             }
         }
@@ -130,19 +130,7 @@ int main(){
     Camera c1({{0,0,960,544}},0,0);
     g1.getMemoryManager()->addImg("app0:/assets/spritesheet.png");
     g1.setCameras({&c1});
-    g1.addItem(std::make_unique<ItemHandler>(0,0,std::vector<std::string>{"Menu"},std::vector<std::string>{"MenuScript"}),&g1);
+    g1.addItem(std::make_unique<ItemHandler>(0,0,1,1,std::vector<std::string>{"Menu"},std::vector<std::string>{"MenuScript"}),&g1);
     g1.gameLoop();
     return 0;
 }
-
-/*
-organisation :
-
-classe Collider:
-	-x
-	-y 
-	-width
-	-heigth
-	-checkCollision(Collider* collider) -> struct{up:bool,down:bool,left:bool,right:bool,contact:bool}
-chaque instance de collider est stockée dans une liste de colliders dans un gameObject
-*/

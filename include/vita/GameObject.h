@@ -43,6 +43,7 @@ class GameObject{
         virtual void setCameras(std::vector<Camera*> cameras);
         virtual int getArrayId();
         virtual void setArrayId(int arrayId);
+        virtual void init();
         //on inclura pas de setters pour scriptsIds et scriptsList et on inclura pas de getter pour scriptsList pour des raisons de sécurité.
 };
 #endif

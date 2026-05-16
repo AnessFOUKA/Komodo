@@ -40,9 +40,11 @@ void Game::gameLoop(){
 }
 
 bool Game::addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandler){
+    //stratégie : créer une méthode d'initialisation pour les gameObjects, permettant aux classes utilisant des coordonnées globales de les initialiser
     newObject->setGameInstance(this);
     newObject->setMother(itemHandler);
     newObject->setArrayId(itemHandler->getElements()->size());
+    newObject->init();
     std::vector<Camera*> newObjectCameras=*(newObject->getCameras());
     std::vector<Camera*> itemHandlerCameras=*(itemHandler->getCameras());
     itemHandlerCameras.insert(itemHandlerCameras.end(),newObjectCameras.begin(),newObjectCameras.end());
@@ -55,6 +57,7 @@ bool Game::addItem(std::unique_ptr<GameObject> newObject,ItemHandler* itemHandle
     itemHandler->getAddPipeline()->push_back(std::move(newObject));
     return true;
 }
+
 bool Game::removeItem(int index,ItemHandler* itemHandler){
     if(!(index>=0&&index<itemHandler->getElements()->size())){
         this->mainErrorHandler.sendError(5,"index out of itemHandler index plage",true,false);
@@ -263,6 +266,36 @@ void ItemHandler::injectJson(
             }
         }else{
             gameInstance->getMainErrorHandler()->sendError(8,"a map json must be an object with callbackMapIds as keys and object attributes as values",true,false);
+        }
+    }catch(json::parse_error& e){
+        gameInstance->getMainErrorHandler()->sendError(6,"json parse error :"+std::string(e.what()),true,false);
+    }catch(json::type_error& e){
+        gameInstance->getMainErrorHandler()->sendError(7,"json type error :"+std::string(e.what()),true,false);
+    }
+}
+
+void manageAnchorPoint(std::string anchorInfos, float& globalX, float& globalY, float width, float height, Game* gameInstance){
+    try{
+        if(anchorInfos=="center"){
+            globalX-=width/2;
+            globalY-=height/2;
+        }else{
+            if(anchorInfos.find("right")!=anchorInfos.npos){
+                globalX-=width;
+            }
+            if(anchorInfos.find("down")!=anchorInfos.npos){
+                globalY-=height;
+            }
+        }
+        auto ajust=anchorInfos.find("$");
+        if(ajust!=anchorInfos.npos){
+            json list=json::parse(anchorInfos.substr(ajust+1,anchorInfos.size()));
+            if(list.is_array()&&list[0].is_number()&&list[1].is_number()){ 
+                globalX+=static_cast<int>(list[0]);
+                globalY+=static_cast<int>(list[1]);
+            }else{
+                gameInstance->getMainErrorHandler()->sendError(13,"ajustInfos section must be an array, with numbers only",true,false);
+            }
         }
     }catch(json::parse_error& e){
         gameInstance->getMainErrorHandler()->sendError(6,"json parse error :"+std::string(e.what()),true,false);

@@ -1,0 +1,1 @@
+rm -rf ./builds/vita/*.o ./builds/vita/*.elf ./builds/vita/*.velf ./builds/vita/*.bin ./builds/vita/*.sfo ./builds/vita/*.vpk 

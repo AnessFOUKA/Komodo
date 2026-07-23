@@ -4,10 +4,22 @@ services:
     build: ./Dockerfiles/vita/
     working_dir: /KomodoV2/
     volumes:
-      - ./include/vita:/KomodoV2/include/
-      - ./src/vita:/KomodoV2/src/
-      - ./Makefiles/vita/:/KomodoV2/makefile
+      - ./include:/KomodoV2/include/
+      - ./src:/KomodoV2/src/
+      - ./Makefiles/vita/:/KomodoV2/makefiledir
       - ./libs/vita:/KomodoV2/libs
       - ./builds/vita:/KomodoV2/build
       - ./assets:/KomodoV2/assets
-    command: bash -c "cd /KomodoV2/makefile && make"
+    command: bash -c "cp /KomodoV2/makefiledir/Makefile /KomodoV2/. && make"
+  3ds:
+    container_name: 3ds
+    image: devkitpro/devkitarm:20260610
+    working_dir: /KomodoV2/
+    volumes:
+      - ./include/3ds:/KomodoV2/include/
+      - ./src/3ds:/KomodoV2/src/
+      - ./Makefiles/3ds/:/KomodoV2/makefiledir
+      - ./libs/3ds:/KomodoV2/libs
+      - ./builds/3ds:/KomodoV2/build
+      - ./assets:/KomodoV2/assets
+    command: bash -c "cp /KomodoV2/makefiledir/Makefile /KomodoV2/. && make V=1 && cp *.3dsx /KomodoV2/build && cp -rf $$DEVKITPRO/libctru/include/* /KomodoV2/libs"

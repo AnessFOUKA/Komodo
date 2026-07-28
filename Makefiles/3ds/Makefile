@@ -36,10 +36,10 @@ BUILD		:=	build
 SOURCES		:=	src
 #DATA		:=	data
 INCLUDES	:=	include
-#GRAPHICS	:=	gfx
+GRAPHICS	:=	gameFilesInternal/gfx
 #GFXBUILD	:=	$(BUILD)
-#ROMFS		:=	romfs
-#GFXBUILD	:=	$(ROMFS)/gfx
+ROMFS		:=	gameFilesInternal
+GFXBUILD	:=	$(GRAPHICS)
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -50,14 +50,14 @@ CFLAGS	:=	-g -Wall -O2 -mword-relocations \
 			-ffunction-sections \
 			$(ARCH)
 
-CFLAGS	+=	$(INCLUDE) -D__3DS__
+CFLAGS	+=	$(INCLUDE) -DPLATFORM_3DS
 
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lctru -lm -lcitro3d -lcitro2d
+LIBS	:= -lcitro2d -lcitro3d -lctru -lm
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing

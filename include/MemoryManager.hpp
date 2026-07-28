@@ -1,32 +1,49 @@
 #ifndef MEMORYMANAGER_H
 #define MEMORYMANAGER_H
-#include <unordered_map>
-#include <vita2d.h>
-#include <string>
-#include <vector>
-#include <psp2/io/fcntl.h>
-#include <psp2/io/stat.h>
 
-enum contentType{
+#ifdef PLATFORM_3DS
+    #include <3ds.h>
+    #include <citro2d.h>
+#endif
+
+#ifdef PLATFORM_PSVITA
+    #include <vita2d.h>
+#endif
+
+#include <vector>
+#include <unordered_map>
+#include <string>
+
+enum DataType{
     TEXTURE,
     AUDIO
 };
 
-struct pipelineOrder{
-    std::string filename;
-    contentType type;
+struct MemoryPipelineOrder{
+    std::string path;
+    DataType type;
 };
 
 class MemoryManager{
     private:
-        static std::vector<pipelineOrder> addPipeline;
-        static std::vector<pipelineOrder> remPipeline;
-        static std::unordered_map<std::string,vita2d_texture*> textureMap;
+        #ifdef PLATFORM_3DS
+            static std::unordered_map<std::string,C2D_SpriteSheet> texturesMap;
+        #endif
+        #ifdef PLATFORM_PSVITA
+            static std::unordered_map<std::string,vita2d_texture*> texturesMap;
+        #endif
+        static std::vector<MemoryPipelineOrder> addPipeline;
+        static std::vector<MemoryPipelineOrder> remPipeline;
     public:
         static void readPipelines();
-        static void storeData(std::string filename, contentType type);
-        static void removeData(std::string filename, contentType type);
-
+        static void storeData(std::string path, DataType type);
+        static void removeData(std::string path, DataType type);
+        #ifdef PLATFORM_3DS
+            static C2D_SpriteSheet getTexture(std::string path);
+        #endif
+        #ifdef PLATFORM_PSVITA
+            static vita2d_texture* getTexture(std::string path);
+        #endif
 };
 
 #endif

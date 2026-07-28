@@ -9,17 +9,43 @@ services:
       - ./Makefiles/vita/:/KomodoV2/makefiledir
       - ./libs/vita:/KomodoV2/libs
       - ./builds/vita:/KomodoV2/build
-      - ./assets:/KomodoV2/assets
-    command: bash -c "cp /KomodoV2/makefiledir/Makefile /KomodoV2/. && make"
+      - ./gameFiles:/KomodoV2/gameFiles
+    command : > 
+      bash -c "
+        #cp -r $$VITASDK/arm-vita-eabi/include /KomodoV2/libs 
+        cp /KomodoV2/makefiledir/Makefile /KomodoV2/. 
+        make
+      "
   3ds:
     container_name: 3ds
     image: devkitpro/devkitarm:20260610
     working_dir: /KomodoV2/
     volumes:
-      - ./include/3ds:/KomodoV2/include/
-      - ./src/3ds:/KomodoV2/src/
+      - ./include:/KomodoV2/include/
+      - ./src:/KomodoV2/src/
       - ./Makefiles/3ds/:/KomodoV2/makefiledir
       - ./libs/3ds:/KomodoV2/libs
       - ./builds/3ds:/KomodoV2/build
-      - ./assets:/KomodoV2/assets
-    command: bash -c "cp /KomodoV2/makefiledir/Makefile /KomodoV2/. && make V=1 && cp *.3dsx /KomodoV2/build && cp -rf $$DEVKITPRO/libctru/include/* /KomodoV2/libs"
+      - ./gameFiles:/KomodoV2/gameFiles
+    command: > 
+      bash -c "
+        #cp -rf $$DEVKITPRO/libctru/include/* /KomodoV2/libs
+        cp /KomodoV2/makefiledir/Makefile /KomodoV2/. 
+      
+        if [[ ! -d "gameFilesInternal" ]]; then
+          mkdir gameFilesInternal
+        fi
+      
+        cp -r /KomodoV2/gameFiles/* /KomodoV2/gameFilesInternal 
+       
+        cd /KomodoV2/gameFilesInternal/gfx
+
+        for file in *.png; do 
+          echo '--atlas -f rgba8888 -z auto'>$$file.t3s 
+          echo "$$file">>$$file.t3s; 
+        done 
+    
+        cd /KomodoV2
+        make 
+        cp *.3dsx /KomodoV2/build 
+      "

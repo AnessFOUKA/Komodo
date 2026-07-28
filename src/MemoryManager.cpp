@@ -1,29 +1,57 @@
 #include "MemoryManager.hpp"
 
-std::vector<pipelineOrder> MemoryManager::addPipeline={};
-std::vector<pipelineOrder> MemoryManager::remPipeline={};
-std::unordered_map<std::string,vita2d_texture*> MemoryManager::textureMap={};
+#ifdef PLATFORM_3DS
+    std::unordered_map<std::string, C2D_SpriteSheet> MemoryManager::texturesMap={};
+#endif
+
+#ifdef PLATFORM_PSVITA
+    std::unordered_map<std::string, vita2d_texture*> MemoryManager::texturesMap={};
+#endif
+
+std::vector<MemoryPipelineOrder> MemoryManager::addPipeline={};
+std::vector<MemoryPipelineOrder> MemoryManager::remPipeline={};
 
 void MemoryManager::readPipelines(){
-    for(auto& addOrder : addPipeline){
-        if(addOrder.type==TEXTURE){
-            textureMap[addOrder.filename]=vita2d_load_PNG_file(addOrder.filename.c_str());
-        }
+    for(auto& addPipelineOrder : addPipeline){
+        #ifdef PLATFORM_3DS
+            std::string fullPath="romfs:/gfx/"+addPipelineOrder.path+".png.t3x";
+            texturesMap[addPipelineOrder.path]=C2D_SpriteSheetLoad(fullPath.c_str());
+        #endif
+        #ifdef PLATFORM_PSVITA
+            std::string fullPath="app0:/gameFiles/gfx/"+addPipelineOrder.path+".png";
+            texturesMap[addPipelineOrder.path]=vita2d_load_PNG_file(fullPath.c_str());
+        #endif
     }
-    for(auto& remOrder : remPipeline){
-        if(remOrder.type==TEXTURE){
-            vita2d_free_texture(textureMap[remOrder.filename]);
-            textureMap.erase(remOrder.filename);
-        }
+    for(auto& remPipelineOrder : remPipeline){
+        #ifdef PLATFORM_3DS
+            C2D_SpriteSheetFree(texturesMap[remPipelineOrder.path]);
+            texturesMap.erase(remPipelineOrder.path);
+        #endif
+        #ifdef PLATFORM_PSVITA
+            vita2d_free_texture(texturesMap[remPipelineOrder.path]);
+            texturesMap.erase(remPipelineOrder.path);
+        #endif
     }
     addPipeline={};
     remPipeline={};
 }
 
-void MemoryManager::storeData(std::string filename, contentType type){
-    addPipeline.push_back({filename,type});
+void MemoryManager::storeData(std::string path, DataType type){
+    addPipeline.push_back({path,type});
 }
 
-void MemoryManager::removeData(std::string filename, contentType type){
-    remPipeline.push_back({filename,type});
+void MemoryManager::removeData(std::string path, DataType type){
+    remPipeline.push_back({path,type});
 }
+
+#ifdef PLATFORM_3DS
+    C2D_SpriteSheet MemoryManager::getTexture(std::string path){
+        return texturesMap[path];
+    }
+#endif
+
+#ifdef PLATFORM_PSVITA
+    vita2d_texture* MemoryManager::getTexture(std::string path){
+        return texturesMap[path];
+    }
+#endif

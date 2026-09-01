@@ -14,41 +14,23 @@
 #include <string>
 #include <vector>
 
+#include "GraphicsManager.hpp"
+
 struct Error{
-    #if defined(PLATFORM_3DS) || defined(PLATFORM_PSVITA)
-    uint16_t code;
-    uint16_t x;
-    uint16_t y;
-    #endif
+    u_int16_t code;
     std::string text;
-    bool interrupt;
-    #ifdef PLATFORM_3DS
-    C2D_TextBuf textBuffer;
-    C2D_Text textGPU;
-    bool initialized;
-    #endif
 };
 
 class ErrorHandler{
     
     static std::vector<Error> errors;
-    static bool showLogs;
     static bool interrupt;
-    static bool initialized;
-    #ifdef PLATFORM_3DS
-    static C2D_Font sysfont;
-    #endif
-
-    #ifdef PLATFORM_PSVITA
-    static vita2d_pvf* sysfont;
-    #endif
+    static size_t errorIndex;
     
     public:
-        #if defined(PLATFORM_3DS) || defined(PLATFORM_PSVITA)
-        static void sendError(uint16_t code, std::string text, bool interrupt, uint16_t x, uint16_t y);
-        #endif
+        static void sendError(u_int16_t code, std::string text);
         static void manageErrors();
-        static void clearErrors();
+        static bool getInterrupt();
 };
 
 #endif

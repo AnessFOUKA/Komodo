@@ -1,7 +1,8 @@
 #include "MemoryManager.hpp"
 
 #ifdef PLATFORM_3DS
-    std::unordered_map<std::string, C2D_SpriteSheet> MemoryManager::texturesMap={};
+    std::unordered_map<std::string, C2D_SpriteSheet> MemoryManager::spritesheets={};
+    std::unordered_map<std::string,C2D_Image> MemoryManager::texturesMap={};
 #endif
 
 #ifdef PLATFORM_PSVITA
@@ -15,16 +16,32 @@ void MemoryManager::readPipelines(){
     for(auto& addPipelineOrder : addPipeline){
         #ifdef PLATFORM_3DS
             std::string fullPath="romfs:/gfx/"+addPipelineOrder.path+".png.t3x";
-            texturesMap[addPipelineOrder.path]=C2D_SpriteSheetLoad(fullPath.c_str());
+            C2D_SpriteSheet newSpriteSheet=C2D_SpriteSheetLoad(fullPath.c_str());
+            if(newSpriteSheet==NULL){
+                ErrorHandler::sendError(0,"Texture load failed.");
+                break;
+            }
+            spritesheets[addPipelineOrder.path]=newSpriteSheet;
+            texturesMap[addPipelineOrder.path]=C2D_SpriteSheetGetImage(spritesheets[addPipelineOrder.path],0);
         #endif
         #ifdef PLATFORM_PSVITA
             std::string fullPath="app0:/gameFiles/gfx/"+addPipelineOrder.path+".png";
-            texturesMap[addPipelineOrder.path]=vita2d_load_PNG_file(fullPath.c_str());
+            vita2d_texture* newTexture=vita2d_load_PNG_file(fullPath.c_str());
+            if(newTexture==NULL){
+                ErrorHandler::sendError(0,"Texture load failed");
+                break;
+            }
+            texturesMap[addPipelineOrder.path]=newTexture;
         #endif
     }
     for(auto& remPipelineOrder : remPipeline){
+        if(texturesMap.find(remPipelineOrder.path)==texturesMap.end()){
+            ErrorHandler::sendError(1,"Texture not found");
+            break;
+        }
         #ifdef PLATFORM_3DS
-            C2D_SpriteSheetFree(texturesMap[remPipelineOrder.path]);
+            C2D_SpriteSheetFree(spritesheets[remPipelineOrder.path]);
+            spritesheets.erase(remPipelineOrder.path);
             texturesMap.erase(remPipelineOrder.path);
         #endif
         #ifdef PLATFORM_PSVITA
@@ -45,13 +62,21 @@ void MemoryManager::removeData(std::string path, DataType type){
 }
 
 #ifdef PLATFORM_3DS
-    C2D_SpriteSheet MemoryManager::getTexture(std::string path){
-        return texturesMap[path];
+    C2D_Image* MemoryManager::getTexture(std::string path){
+        if(texturesMap.find(path)==texturesMap.end()){
+            ErrorHandler::sendError(1,"Texture not found");
+            return nullptr;
+        }
+        return &texturesMap[path];
     }
 #endif
 
 #ifdef PLATFORM_PSVITA
     vita2d_texture* MemoryManager::getTexture(std::string path){
+        if(texturesMap.find(path)==texturesMap.end()){
+            ErrorHandler::sendError(1,"Texture not found");
+            return nullptr;
+        }
         return texturesMap[path];
     }
 #endif

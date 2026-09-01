@@ -2,7 +2,7 @@ SRC=src
 INC=include
 BUILD=build
 TARGET=app
-OBJS=$(SRC)/main.o $(SRC)/Komodo.o $(SRC)/MemoryManager.o $(SRC)/GraphicsManager.o $(SRC)/ErrorHandler.o
+OBJS=$(SRC)/main.o $(SRC)/Komodo.o $(SRC)/MemoryManager.o $(SRC)/GraphicsManager.o $(SRC)/ErrorHandler.o $(SRC)/Component.o $(SRC)/GameObject.o $(SRC)/Hyerarchy.o $(SRC)/GameObjectsManager.o $(SRC)/Camera.o
 LIBS= -lvita2d -lSceGxm_stub -lSceDisplay_stub -lSceSysmodule_stub -lSceCtrl_stub -lScePgf_stub -lScePvf_stub -lSceCommonDialog_stub -lpng -ljpeg -lfreetype -lz -lm -lc -lSceAppMgr_stub -lsoloud -lpthread -lSceAudio_stub
 
 $(BUILD)/$(TARGET).vpk : $(BUILD)/eboot.bin

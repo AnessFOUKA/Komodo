@@ -13,6 +13,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include "ErrorHandler.hpp"
 
 enum DataType{
     TEXTURE,
@@ -27,7 +28,8 @@ struct MemoryPipelineOrder{
 class MemoryManager{
     private:
         #ifdef PLATFORM_3DS
-            static std::unordered_map<std::string,C2D_SpriteSheet> texturesMap;
+            static std::unordered_map<std::string,C2D_SpriteSheet> spritesheets;
+            static std::unordered_map<std::string,C2D_Image> texturesMap;
         #endif
         #ifdef PLATFORM_PSVITA
             static std::unordered_map<std::string,vita2d_texture*> texturesMap;
@@ -39,7 +41,7 @@ class MemoryManager{
         static void storeData(std::string path, DataType type);
         static void removeData(std::string path, DataType type);
         #ifdef PLATFORM_3DS
-            static C2D_SpriteSheet getTexture(std::string path);
+            static C2D_Image* getTexture(std::string path);
         #endif
         #ifdef PLATFORM_PSVITA
             static vita2d_texture* getTexture(std::string path);

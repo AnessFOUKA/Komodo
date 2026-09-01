@@ -1,7 +1,6 @@
 #ifdef PLATFORM_3DS
 #include <3ds.h>
 #include <citro2d.h>
-#include <pthread.h>
 #endif
 
 #ifdef PLATFORM_PSVITA
@@ -12,21 +11,51 @@
 
 #include "MemoryManager.hpp"
 #include "ErrorHandler.hpp"
+#include "GraphicsManager.hpp"
+#include "GameObject.hpp"
+#include "GameObjectsManager.hpp"
+
+class Test : public Component{
+    public:
+        Test(GameObject* parent):
+            Component(parent)
+        {}
+
+        void onLink(){}
+        void onUnlink(){}
+        void onLoop(){
+            GraphicsManager::drawText({"eee"}, -800, 0, 0, 1.0f, 255, {"test"}, 0);
+        }
+};
+
+class GameObjectTest : public GameObject{
+    public:
+        GameObjectTest():
+            GameObject()
+        {}
+
+        void onCreate(){
+            GameObjectsManager::addComponent(std::make_unique<Test>(this),this);
+        }
+        void onLoop(){
+            GraphicsManager::drawTexturePart("test2",-1000,50,0,0,32,32,1.0f,1.0f,255,0,{"test"},0);
+            GraphicsManager::drawText({std::to_string(components.size())},-1000,0,0,1.0f,255,{"test"},0);
+            GameObject::onLoop();
+        }
+};
 
 int main(){
     #ifdef PLATFORM_PSVITA
         vita2d_init();
-        MemoryManager::readPipelines();
+        MemoryManager::storeData("test2",TEXTURE);
+        std::unique_ptr<GameObject> test = std::make_unique<GameObjectTest>();
+        GameObjectsManager::addChild(std::move(test),GameObjectsManager::getMothernode());
+        GraphicsManager::addCamera("test",-1200,0,-200,0,400,240);
         while(true){
-            ErrorHandler::sendError(0,"test",false,50,50);
-            vita2d_start_drawing();
-            vita2d_clear_screen();
-
-            ErrorHandler::manageErrors();
-
-            vita2d_end_drawing();
-            sceDisplayWaitVblankStart();
-            vita2d_swap_buffers();
+            MemoryManager::readPipelines();
+            GameObjectsManager::getMothernode()->loop();
+            GraphicsManager::executeGraphicPipeline();
+            ErrorHandler::manageErrors();  
         }
         vita2d_fini();
         sceKernelExitProcess(0);
@@ -38,31 +67,17 @@ int main(){
         C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
         C2D_Prepare();
         romfsInit();
-        C3D_RenderTarget* up=C2D_CreateScreenTarget(GFX_TOP,GFX_LEFT);
-        C3D_RenderTarget* bottom=C2D_CreateScreenTarget(GFX_BOTTOM,GFX_LEFT);
-        MemoryManager::storeData("test",TEXTURE);
-        MemoryManager::readPipelines();
-        consoleInit(GFX_BOTTOM,NULL);
-        printf("aaa");
 
-        C2D_Font font=C2D_FontLoadSystem(CFG_REGION_EUR);
-        C2D_TextBuf buff=C2D_TextBufNew(4096);
-        C2D_Text text;
-
-        C2D_TextFontParse(&text,font,buff,"test");
-        C2D_TextOptimize(&text);
+        MemoryManager::storeData("test2",TEXTURE);
+        std::unique_ptr<GameObject> test = std::make_unique<GameObjectTest>();
+        GameObjectsManager::addChild(std::move(test),GameObjectsManager::getMothernode());
+        GraphicsManager::addCamera("test",-1200,0,-200,0,400,240);
         while (aptMainLoop())
         {
-            C2D_Image img=C2D_SpriteSheetGetImage(MemoryManager::getTexture("test"),0);
-            ErrorHandler::sendError(0,"test",false,0,0);
-            C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-            C2D_TargetClear(up,C2D_Color32(0,0,0,255));
-            C2D_SceneBegin(up);
-            
+            MemoryManager::readPipelines();
+            GameObjectsManager::getMothernode()->loop();
+            GraphicsManager::executeGraphicPipeline();
             ErrorHandler::manageErrors();
-            //C2D_DrawImageAt(img,0,0,0,NULL,1.0f,1.0f);
-
-            C3D_FrameEnd(0);
         }
         romfsExit();
         C2D_Fini();

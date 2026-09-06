@@ -27,9 +27,10 @@ services:
       - ./libs/3ds:/KomodoV2/libs
       - ./builds/3ds:/KomodoV2/build
       - ./gameFiles:/KomodoV2/gameFiles
+      - ./3dsTools:/KomodoV2/tools
     command: > 
       bash -c "
-        #cp -rf $$DEVKITPRO/libctru/include/* /KomodoV2/libs
+        #cp -rf $$DEVKITPRO/libctru/include/* /KomodoV2/libs && cp $$DEVKITPRO/tools/bin/3dslink /KomodoV2/tools
         cp /KomodoV2/makefiledir/Makefile /KomodoV2/. 
       
         if [[ ! -d "gameFilesInternal" ]]; then

@@ -1,18 +1,6 @@
-#ifdef PLATFORM_3DS
-#include <3ds.h>
-#include <citro2d.h>
-#endif
-
-#ifdef PLATFORM_PSVITA
-#include <vita2d.h>
-#include <psp2/kernel/processmgr.h>
-#include <psp2/display.h>
-#endif
-
-#include "MemoryManager.hpp"
-#include "ErrorHandler.hpp"
-#include "GraphicsManager.hpp"
+#include "Komodo.hpp"
 #include "GameObject.hpp"
+#include "GraphicsManager.hpp"
 #include "GameObjectsManager.hpp"
 
 class Test : public Component{
@@ -24,7 +12,15 @@ class Test : public Component{
         void onLink(){}
         void onUnlink(){}
         void onLoop(){
-            GraphicsManager::drawText({"eee"}, -800, 0, 0, 1.0f, 255, {"test"}, 0);
+            //auto stick=ControllersManager::getKeyState("std_controller","stick");
+            auto dpad=ControllersManager::getKeyDown("std_controller","3ds_a");
+            //auto touch=ControllersManager::getKeyState("std_controller","touchScreen");
+            if(dpad!=nullptr){
+                GraphicsManager::drawText({
+                    std::to_string((*dpad)[0])+" "+std::to_string((*dpad)[1])
+                }, -800, 0, 30, 1.0f, 255, {"test"}, 0);  
+            }
+            
         }
 };
 
@@ -45,44 +41,13 @@ class GameObjectTest : public GameObject{
 };
 
 int main(){
-    #ifdef PLATFORM_PSVITA
-        vita2d_init();
-        MemoryManager::storeData("test2",TEXTURE);
-        std::unique_ptr<GameObject> test = std::make_unique<GameObjectTest>();
-        GameObjectsManager::addChild(std::move(test),GameObjectsManager::getMothernode());
-        GraphicsManager::addCamera("test",-1200,0,-200,0,400,240);
-        while(true){
-            MemoryManager::readPipelines();
-            GameObjectsManager::getMothernode()->loop();
-            GraphicsManager::executeGraphicPipeline();
-            ErrorHandler::manageErrors();  
-        }
-        vita2d_fini();
-        sceKernelExitProcess(0);
-    #endif
 
-    #ifdef PLATFORM_3DS
-        gfxInitDefault();
-        C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
-        C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
-        C2D_Prepare();
-        romfsInit();
+    Komodo::init();
+    GraphicsManager::addCamera("test",-1000,0,0,0,400,400);
+    MemoryManager::storeData("test2",TEXTURE);
+    GameObjectsManager::addChild(std::make_unique<GameObjectTest>(),GameObjectsManager::getMothernode());
+    Komodo::gameloop();
+    Komodo::fini();
 
-        MemoryManager::storeData("test2",TEXTURE);
-        std::unique_ptr<GameObject> test = std::make_unique<GameObjectTest>();
-        GameObjectsManager::addChild(std::move(test),GameObjectsManager::getMothernode());
-        GraphicsManager::addCamera("test",-1200,0,-200,0,400,240);
-        while (aptMainLoop())
-        {
-            MemoryManager::readPipelines();
-            GameObjectsManager::getMothernode()->loop();
-            GraphicsManager::executeGraphicPipeline();
-            ErrorHandler::manageErrors();
-        }
-        romfsExit();
-        C2D_Fini();
-        C3D_Fini();
-        gfxExit();
-    #endif
     return 0;
 }

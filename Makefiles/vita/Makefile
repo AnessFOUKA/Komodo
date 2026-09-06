@@ -2,8 +2,8 @@ SRC=src
 INC=include
 BUILD=build
 TARGET=app
-OBJS=$(SRC)/main.o $(SRC)/Komodo.o $(SRC)/MemoryManager.o $(SRC)/GraphicsManager.o $(SRC)/ErrorHandler.o $(SRC)/Component.o $(SRC)/GameObject.o $(SRC)/Hyerarchy.o $(SRC)/GameObjectsManager.o $(SRC)/Camera.o
-LIBS= -lvita2d -lSceGxm_stub -lSceDisplay_stub -lSceSysmodule_stub -lSceCtrl_stub -lScePgf_stub -lScePvf_stub -lSceCommonDialog_stub -lpng -ljpeg -lfreetype -lz -lm -lc -lSceAppMgr_stub -lsoloud -lpthread -lSceAudio_stub
+OBJS=$(SRC)/main.o $(SRC)/Komodo.o $(SRC)/MemoryManager.o $(SRC)/GraphicsManager.o $(SRC)/ErrorHandler.o $(SRC)/Component.o $(SRC)/GameObject.o $(SRC)/Hyerarchy.o $(SRC)/GameObjectsManager.o $(SRC)/Camera.o $(SRC)/ControllersManager.o $(SRC)/Controller.o $(SRC)/StdController.o  
+LIBS= -lvita2d -lSceGxm_stub -lSceDisplay_stub -lSceSysmodule_stub -lSceCtrl_stub -lSceTouch_stub -lScePgf_stub -lScePvf_stub -lSceCommonDialog_stub -lpng -ljpeg -lfreetype -lz -lm -lc -lSceAppMgr_stub -lsoloud -lpthread -lSceAudio_stub
 
 $(BUILD)/$(TARGET).vpk : $(BUILD)/eboot.bin
 	vita-mksfoex -s TITLE_ID=APP000001 "app" $(BUILD)/param.sfo

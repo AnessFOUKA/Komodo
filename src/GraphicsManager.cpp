@@ -103,6 +103,7 @@ void GraphicsManager::drawTexturePart(
     float scaleY,
     float alpha, 
     int layer,
+    Anchor anchor,
     std::vector<std::string> cam_ids,
     size_t screenIndex
 ){
@@ -111,6 +112,7 @@ void GraphicsManager::drawTexturePart(
     }else{
         for(std::string& cam_id : cam_ids){
             texturePipeline[screenIndex][cam_id][path].push_back(GraphicOrder{
+                .anchor=anchor,
                 .x=x,
                 .y=y,
                 .imageX=imageX,
@@ -179,6 +181,23 @@ void GraphicsManager::executeGraphicPipeline(){
                     for(auto& graphicOrder : graphicOrders){
                         float x=graphicOrder.x;
                         float y=graphicOrder.y;
+                        
+                        switch(graphicOrder.anchor){
+                            
+                            case ANCHOR_CENTER:
+                                x-=(graphicOrder.imageWidth*graphicOrder.scaleX)/2;
+                                y-=(graphicOrder.imageHeight*graphicOrder.scaleY)/2;
+                                break;
+
+                            case ANCHOR_RIGHT:
+                                x-=graphicOrder.imageWidth*graphicOrder.scaleX;
+                                y-=graphicOrder.imageHeight*graphicOrder.scaleY;
+                                break;
+
+                            default:
+                                break;
+                        }
+
                         if(camera!=nullptr){
                             x-=(camera->getCx()-camera->getRx());
                             y-=(camera->getCy()-camera->getRy());

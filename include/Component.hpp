@@ -7,7 +7,7 @@ class Component{
         GameObject* parent;
         size_t arrayId;
     public:
-        Component(GameObject* parent);
+        Component();
         virtual ~Component()=default;
 
         virtual void onLink(){};

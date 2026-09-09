@@ -63,8 +63,7 @@ void GameObject::onCreate(){}
 void GameObject::onLoop(){
 }
 
-Component::Component(GameObject* parent):
-    parent(parent),
+Component::Component():
     arrayId(0)
 {}
 

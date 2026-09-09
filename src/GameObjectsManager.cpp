@@ -16,6 +16,7 @@ void GameObjectsManager::remChild(GameObject* child, GameObject* parent){
 }
 
 void GameObjectsManager::addComponent(std::unique_ptr<Component> component, GameObject* child){
+    component->setParent(child);
     child->getComponentPipeline()->add.push_back(std::move(component));
 }
 

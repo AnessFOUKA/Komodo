@@ -103,7 +103,8 @@ void GraphicsManager::drawTexturePart(
     float scaleY,
     float alpha, 
     int layer,
-    Anchor anchor,
+    Anchor anchorX,
+    Anchor anchorY,
     std::vector<std::string> cam_ids,
     size_t screenIndex
 ){
@@ -112,7 +113,8 @@ void GraphicsManager::drawTexturePart(
     }else{
         for(std::string& cam_id : cam_ids){
             texturePipeline[screenIndex][cam_id][path].push_back(GraphicOrder{
-                .anchor=anchor,
+                .anchorX=anchorX,
+                .anchorY=anchorY,
                 .x=x,
                 .y=y,
                 .imageX=imageX,
@@ -182,20 +184,18 @@ void GraphicsManager::executeGraphicPipeline(){
                         float x=graphicOrder.x;
                         float y=graphicOrder.y;
                         
-                        switch(graphicOrder.anchor){
-                            
-                            case ANCHOR_CENTER:
-                                x-=(graphicOrder.imageWidth*graphicOrder.scaleX)/2;
-                                y-=(graphicOrder.imageHeight*graphicOrder.scaleY)/2;
-                                break;
-
-                            case ANCHOR_RIGHT:
-                                x-=graphicOrder.imageWidth*graphicOrder.scaleX;
-                                y-=graphicOrder.imageHeight*graphicOrder.scaleY;
-                                break;
-
-                            default:
-                                break;
+                        Anchor* anchors[2]={&graphicOrder.anchorX,&graphicOrder.anchorY};
+                        for(size_t anchorIndex=0; anchorIndex<2; anchorIndex++){
+                            if(*anchors[anchorIndex]!=ANCHOR_MIN){
+                                float size=anchorIndex==0?graphicOrder.imageWidth*graphicOrder.scaleX:graphicOrder.imageHeight*graphicOrder.scaleY;
+                                if(*anchors[anchorIndex]==ANCHOR_CENTER)
+                                    size/=2;
+                                if(anchorIndex==0){
+                                    x-=size;
+                                }else{
+                                    y-=size;
+                                }
+                            }
                         }
 
                         if(camera!=nullptr){

@@ -24,13 +24,14 @@
 #endif
 
 enum Anchor{
-    ANCHOR_LEFT,
+    ANCHOR_MIN,
     ANCHOR_CENTER,
-    ANCHOR_RIGHT
+    ANCHOR_MAX,
 };
 
 struct GraphicOrder{
-    Anchor anchor;
+    Anchor anchorX;
+    Anchor anchorY;
     float x;
     float y;
     float imageX;
@@ -82,7 +83,8 @@ class GraphicsManager{
             float scaleY,
             float alpha, 
             int layer,
-            Anchor anchor,
+            Anchor anchorX,
+            Anchor anchorY,
             std::vector<std::string> cam_ids,
             size_t screenIndex=0
         );

@@ -49,7 +49,15 @@ size_t AnimationComponent::getScreenIndex(){
 }
 
 Anchor AnimationComponent::getAnchor(){
-    return anchor;
+    return anchorX;
+}
+
+Anchor AnimationComponent::getAnchorX(){
+    return anchorX;
+}
+
+Anchor AnimationComponent::getAnchorY(){
+    return anchorY;
 }
 
 void AnimationComponent::setTexturePath(std::string texturePath){
@@ -93,7 +101,16 @@ void AnimationComponent::setScreenIndex(size_t screenIndex){
 }
 
 void AnimationComponent::setAnchor(Anchor anchor){
-    this->anchor = anchor;
+    anchorX = anchor;
+    anchorY = anchor;
+}
+
+void AnimationComponent::setAnchorX(Anchor anchorX){
+    this->anchorX = anchorX;
+}
+
+void AnimationComponent::setAnchorY(Anchor anchorY){
+    this->anchorY = anchorY;
 }
 
 void AnimationComponent::onLoop(){
@@ -111,7 +128,8 @@ void AnimationComponent::onLoop(){
             scaleY, 
             alpha, 
             layer, 
-            anchor, 
+            anchorX,
+            anchorY,
             cam_ids, 
             screenIndex
         );

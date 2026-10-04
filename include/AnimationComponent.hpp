@@ -26,9 +26,10 @@ class AnimationComponent : public Component{
         float alpha;
         int layer;
         size_t screenIndex;
-        Anchor anchor;
+        Anchor anchorX;
+        Anchor anchorY;
     public:
-        AnimationComponent(std::string texturePath, std::vector<AnimationFrame> frames, float animationSpeed, float x, float y, float scaleX, float scaleY, float alpha, int layer, Anchor anchor, std::vector<std::string> cam_ids, size_t screenIndex=0):
+        AnimationComponent(std::string texturePath, std::vector<AnimationFrame> frames, float animationSpeed, float x, float y, float scaleX, float scaleY, float alpha, int layer, Anchor anchorX, Anchor anchorY, std::vector<std::string> cam_ids, size_t screenIndex=0):
             texturePath(texturePath),
             cam_ids(cam_ids),
             frames(frames),
@@ -41,7 +42,8 @@ class AnimationComponent : public Component{
             alpha(alpha),
             layer(layer),
             screenIndex(screenIndex),
-            anchor(anchor)
+            anchorX(anchorX),
+            anchorY(anchorY)
         {}
 
         std::vector<AnimationFrame>* getFrames();
@@ -57,6 +59,8 @@ class AnimationComponent : public Component{
         int getLayer();
         size_t getScreenIndex();
         Anchor getAnchor();
+        Anchor getAnchorX();
+        Anchor getAnchorY();
 
         void setTexturePath(std::string texturePath);
         void setFrameIndex(float frameIndex);
@@ -69,6 +73,8 @@ class AnimationComponent : public Component{
         void setLayer(int layer);
         void setScreenIndex(size_t screenIndex);
         void setAnchor(Anchor anchor);
+        void setAnchorX(Anchor anchorX);
+        void setAnchorY(Anchor anchorY);
 
         void onLoop();
 };

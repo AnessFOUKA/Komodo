@@ -1,4 +1,5 @@
 #include "Komodo.hpp"
+#include "stb_vorbis.hpp"
 
 bool Komodo::run=true;
 
@@ -18,7 +19,6 @@ void Komodo::init(){
     C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
     C2D_Prepare();
     romfsInit();
-
     #endif
     #ifdef PLATFORM_PSVITA
     vita2d_init();
@@ -31,10 +31,12 @@ void Komodo::gameloop(){
             && aptMainLoop()
         #endif
     ){
-        
         oldTime=currentTime;
         currentTime=std::chrono::high_resolution_clock::now();
         dt=std::chrono::duration<float>(currentTime-oldTime).count();
+        if(dt>1.0f){
+            dt=1.0f;
+        }
 
         ControllersManager::updateControllersState();
         MemoryManager::readPipelines();

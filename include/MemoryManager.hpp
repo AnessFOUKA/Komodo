@@ -14,6 +14,7 @@
 #include <unordered_map>
 #include <string>
 #include "ErrorHandler.hpp"
+#include "stb_vorbis.hpp"
 
 enum DataType{
     TEXTURE,
@@ -34,12 +35,16 @@ class MemoryManager{
         #ifdef PLATFORM_PSVITA
             static std::unordered_map<std::string,vita2d_texture*> texturesMap;
         #endif
+
+        static std::unordered_map<std::string,stb_vorbis*> audioMap;
         static std::vector<MemoryPipelineOrder> addPipeline;
         static std::vector<MemoryPipelineOrder> remPipeline;
     public:
         static void readPipelines();
         static void storeData(std::string path, DataType type);
         static void removeData(std::string path, DataType type);
+        static void clearMemory();
+        static stb_vorbis* getAudio(std::string path);
         #ifdef PLATFORM_3DS
             static C2D_Image* getTexture(std::string path);
         #endif

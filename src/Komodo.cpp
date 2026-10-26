@@ -1,5 +1,4 @@
 #include "Komodo.hpp"
-#include "stb_vorbis.hpp"
 
 bool Komodo::run=true;
 
@@ -23,9 +22,11 @@ void Komodo::init(){
     #ifdef PLATFORM_PSVITA
     vita2d_init();
     #endif
+    SoundManager::init();
 }
 
 void Komodo::gameloop(){
+    MemoryManager::storeData("test_48000.ogg",AUDIO);
     while(run
         #ifdef PLATFORM_3DS
             && aptMainLoop()
@@ -41,12 +42,15 @@ void Komodo::gameloop(){
         ControllersManager::updateControllersState();
         MemoryManager::readPipelines();
         GameObjectsManager::getMothernode()->loop();
+        SoundManager::executePipeline();
+        SoundManager::loop();
         GraphicsManager::executeGraphicPipeline();
         ErrorHandler::manageErrors();  
     }
 }
 
 void Komodo::fini(){
+    SoundManager::fini();
     #ifdef PLATFORM_3DS
     romfsExit();
     C2D_Fini();

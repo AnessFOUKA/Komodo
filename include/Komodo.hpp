@@ -21,6 +21,7 @@
 #include "GameObjectsManager.hpp"
 #include "ControllersManager.hpp"
 #include "StdController.hpp"
+#include "SoundManager.hpp"
 
 class Komodo{
     static bool run;

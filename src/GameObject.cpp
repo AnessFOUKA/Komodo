@@ -95,7 +95,7 @@ void GameObject::manageComponentsPipeline(){
             unlinkOrder->onUnlink();
             components.erase(components.begin()+unlinkOrder->getArrayId());
         }else{
-            ErrorHandler::sendError(4, "index out of bounds");
+            ErrorHandler::sendError(4, "out of range arrayId");
         }
     }
     componentPipeline.add.clear();
@@ -126,7 +126,7 @@ void GameObject::manageObjectsPipeline(){
             remOrder->onRemove();
             hyerarchy.getChilds()->erase(hyerarchy.getChilds()->begin()+remOrder->getArrayId());
         }else{
-            ErrorHandler::sendError(4, "index out of bounds");
+            ErrorHandler::sendError(4, "out of range arrayId");
         }
     }
     objectsPipeline.add.clear();

@@ -83,7 +83,7 @@ void GraphicsManager::drawText(std::vector<std::string> lines, float x, float y,
     textOrder.scale=scale;
     textOrder.alpha=alpha;
     if(screenIndex>=textPipeline.size()){
-        ErrorHandler::sendError(2,"out of range screenIndex");
+        ErrorHandler::sendError(5,"out of range screenIndex");
     }else{
         for(std::string& cam_id : cam_ids){
             textPipeline[screenIndex][cam_id].push_back(textOrder);
@@ -109,7 +109,7 @@ void GraphicsManager::drawTexturePart(
     size_t screenIndex
 ){
     if(screenIndex>=textPipeline.size()){
-        ErrorHandler::sendError(2,"out of range screenIndex");
+        ErrorHandler::sendError(5,"out of range screenIndex");
     }else{
         for(std::string& cam_id : cam_ids){
             texturePipeline[screenIndex][cam_id][path].push_back(GraphicOrder{
@@ -248,7 +248,7 @@ void GraphicsManager::executeGraphicPipeline(){
 
                                 C2D_DrawImageAt(modifiedImage,x,y,0,&imageTint,graphicOrder.scaleX,graphicOrder.scaleY);   
                             }else{
-                                ErrorHandler::sendError(3,"coordinates out of range");
+                                ErrorHandler::sendError(6,"out of range texture coordinates");
                             }
                         }
                         
@@ -263,7 +263,7 @@ void GraphicsManager::executeGraphicPipeline(){
                             && (graphicOrder.imageY >= 0 && graphicOrder.imageY + graphicOrder.imageHeight <= texHeight)
                         );
                         if(!coordsInRange){
-                            ErrorHandler::sendError(3,"coordinates out of range");
+                            ErrorHandler::sendError(6,"out of range texture coordinates");
                         }else{
                             if(baseImage!=nullptr)vita2d_draw_texture_tint_part_scale(
                                 baseImage,
@@ -368,7 +368,7 @@ void GraphicsManager::remCamera(std::string cam_id){
     if(cameras.find(cam_id)!=cameras.end()){
         cameras.erase(cam_id);
     }else{
-        ErrorHandler::sendError(6,"camera "+cam_id+" is undefined");
+        ErrorHandler::sendError(9,"camera "+cam_id+" is undefined");
     }
 }
 
@@ -377,7 +377,7 @@ Camera* GraphicsManager::getCamera(std::string cam_id){
     if(camera!=cameras.end()){
         return &camera->second;
     }else{
-        ErrorHandler::sendError(6,"camera "+cam_id+" is undefined");
+        ErrorHandler::sendError(9,"camera "+cam_id+" is undefined");
         return nullptr;
     }
 }

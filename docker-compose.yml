@@ -6,33 +6,39 @@ services:
     volumes:
       - ./include:/KomodoV2/include/
       - ./src:/KomodoV2/src/
-      - ./Makefiles/vita/:/KomodoV2/makefiledir
-      - ./libs/vita:/KomodoV2/libs
+      - ./Makefiles/vita/Makefile:/KomodoV2/Makefile
+      - ./libs:/KomodoV2/libs
       - ./builds/vita:/KomodoV2/build
       - ./gameFiles:/KomodoV2/gameFiles
     command : > 
       bash -c "
-        #cp -r $$VITASDK/arm-vita-eabi/include /KomodoV2/libs 
-        cp /KomodoV2/makefiledir/Makefile /KomodoV2/. 
+        if [[ ! -d /KomodoV2/libs/vita ]]; then
+          mkdir /KomodoV2/libs/vita
+          cp -r $$VITASDK/arm-vita-eabi/include /KomodoV2/libs/vita
+        fi
         make
       "
   3ds:
     container_name: 3ds
     image: devkitpro/devkitarm:20260610
     working_dir: /KomodoV2/
+    environment:
+      - test=gameFilesInternal/gfx gameFilesInternal/gfx2
     volumes:
       - ./include:/KomodoV2/include/
       - ./src:/KomodoV2/src/
-      - ./Makefiles/3ds/:/KomodoV2/makefiledir
+      - ./Makefiles/3ds/Makefile:/KomodoV2/Makefile
       - ./libs/3ds:/KomodoV2/libs
       - ./builds/3ds:/KomodoV2/build
       - ./gameFiles:/KomodoV2/gameFiles
       - ./3dsTools:/KomodoV2/tools
     command: > 
       bash -c "
-        #cp -rf $$DEVKITPRO/libctru/include/* /KomodoV2/libs && cp $$DEVKITPRO/tools/bin/3dslink /KomodoV2/tools
-        cp /KomodoV2/makefiledir/Makefile /KomodoV2/. 
-      
+        if [[ ! -d /KomodoV2/libs/3ds ]]; then
+          mkdir /KomodoV2/libs/3ds
+          cp -rf $$DEVKITPRO/libctru/include/* /KomodoV2/libs
+        fi
+
         if [[ ! -d "gameFilesInternal" ]]; then
           mkdir gameFilesInternal
         fi

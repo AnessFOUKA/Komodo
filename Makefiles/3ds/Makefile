@@ -39,7 +39,7 @@ INCLUDES	:=	include
 GRAPHICS	:=	gameFilesInternal/gfx
 #GFXBUILD	:=	$(BUILD)
 ROMFS		:=	gameFilesInternal
-GFXBUILD	:=	$(GRAPHICS)
+GFXBUILD	:=	$(ROMFS)/gfx
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -50,20 +50,20 @@ CFLAGS	:=	-g -Wall -O2 -mword-relocations \
 			-ffunction-sections \
 			$(ARCH)
 
-CFLAGS	+=	$(INCLUDE) -DPLATFORM_3DS
+CFLAGS	+=	$(INCLUDE) -D PLATFORM_3DS
 
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lcitro2d -lcitro3d -lSDL_mixer -lSDL -lctru -lm
+LIBS	:= -lcitro2d -lcitro3d -lctru -lm
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(CTRULIB) $(DEVKITPRO)/portlibs/3ds
+LIBDIRS	:= $(CTRULIB)
 
 
 #---------------------------------------------------------------------------------
